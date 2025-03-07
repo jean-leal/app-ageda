@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Image } from 'react-native';
 import { Link } from "expo-router";
 
 import Button from '../components/button';
-import Input from '../components/input/input';
+import Input from '../components/input';
 
 export default function App() {
   return (
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   img: {
-    width: 180,
-    height: 180,
+    width: 150,
+    height: 150,
     marginBottom: 40
   }
 });
