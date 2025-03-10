@@ -2,11 +2,11 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import colors from '../../constants/theme';
 
-export default function Button({btnStyle, title, ...rest }) {
+export default function Button({ loading, btnStyle, title, ...rest }) {
   return (
     <View style={[styles.container, btnStyle]}>
       <TouchableOpacity style={styles.btnArea} {...rest}>
-        <Text style={styles.btnText}>{title}</Text>
+        <Text style={styles.btnText}>{loading ? 'Carregando...' : title}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,0 +1,3 @@
+export const supaUrl = "https://leejukmmypmwipugpgeg.supabase.co"
+
+export const supaAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZWp1a21teXBtd2lwdWdwZ2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1NTk5MzYsImV4cCI6MjA1NzEzNTkzNn0.W4iMtp-HkCSbbpQhtFdawjyuMJdYnnjf_vEK6M4l6_s"

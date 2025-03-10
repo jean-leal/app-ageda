@@ -22,7 +22,7 @@ export default function App() {
       <View style={{ flexDirection: 'row', marginTop: 12 }}>
         <Text>Não tem conta?</Text>
         <Link
-          href="register"
+          href="signup"
           style={{ marginLeft: 12, fontWeight: 'bold' }}
         >
           Criar Conta
