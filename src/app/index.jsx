@@ -1,60 +1,13 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
-import { Link } from "expo-router";
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 
-import Button from '../components/button';
-import Input from '../components/input';
-import { useAuth } from '../contexts/AuthContext';
+import colors from '../constants/theme';
 
-export default function App() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const {
-    loading,
-    SignIn
-  } = useAuth();
-
-  const handleSignIn = async () => {
-    const ret = await SignIn({ email, password });
-  }
+export default function App() { 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <Image
-        source={require('../assets/logo.png')}
-        style={styles.img}
-      />
-      <Input 
-        iconName={'mail-outline'} 
-        placeholder={"Email"} 
-        inputStyle={{ marginBottom: 16 }} 
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Input 
-        iconName={'lock-closed-outline'} 
-        placeholder={"Senha"} 
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button
-        title="Adicionar"
-        btnStyle={styles.btnStyle}
-        onPress={handleSignIn}
-        loading={loading}
-      />
-      <View style={{ flexDirection: 'row', marginTop: 12 }}>
-        <Text>Não tem conta?</Text>
-        <Link
-          href="signup"
-          style={{ marginLeft: 12, fontWeight: 'bold' }}
-        >
-          Criar Conta
-        </Link>
-      </View>
+      <ActivityIndicator size={44} color={colors.primary} />
     </View>
   )
 }
@@ -62,26 +15,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24
-  },
-  title: {
-    width: '100%',
-    fontSize: 48,
-    fontWeight: 'bold',
-    marginBottom: 48
-  },
-  btnStyle: {
-    textAlign: 'start',
-    marginTop: 32,
-    width: '80%'
-  },
-  img: {
-    width: 150,
-    height: 150,
-    marginBottom: 40
   }
 });
 
