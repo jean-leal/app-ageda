@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
     }
     //se nao der erro, continua 
     setLoading(false);
-    router.replace('/home');
+    router.replace('/(tabs)');
   }
 
   function setAuth(authUser) {

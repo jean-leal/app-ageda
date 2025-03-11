@@ -24,7 +24,7 @@ function MainLayout() {
       // caso o usuario esteja logado, seta o usuario no contexto e redireciona para a tela home
       if (session?.user) {
         setAuth(session.user);
-        router.replace('/home');
+        router.replace('/(tabs)');
         return;
       }
       // caso o usuario nao esteja logado, seta o usuario como null e redireciona para a tela de login
@@ -57,18 +57,22 @@ function MainLayout() {
               title: "Carregando"
             }}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="signin"
             options={{
               headerShown: false,
               title: "Login"
             }}
           />
-          <Stack.Screen name="home" />
           <Stack.Screen
             name="signup"
             options={{
               title: "Cadastro"
+            }} />
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false
             }} />
         </Stack>
       </View>
