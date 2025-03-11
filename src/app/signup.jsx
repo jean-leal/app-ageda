@@ -12,12 +12,12 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  
+
   const {
     loading,
     SignUp
   } = useAuth();
-  
+
   // chamando a função de cadastro dentro do contexto
   const handleSignUp = async () => {
     const ret = await SignUp({ name, email, password, passwordConfirm });
@@ -55,7 +55,7 @@ export default function SignUp() {
       <Button
         title='Cadastrar'
         btnStyle={{ marginTop: 38, width: '90%' }}
-        onPress={ handleSignUp}
+        onPress={handleSignUp}
         loading={loading}
       />
     </View>

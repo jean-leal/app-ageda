@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 import { Link } from "expo-router";
 
 import Button from '../components/button';
 import Input from '../components/input';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function App() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const {
+    loading,
+    SignIn
+  } = useAuth();
+
+  const handleSignIn = async () => {
+    const ret = await SignIn({ email, password });
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -13,11 +26,25 @@ export default function App() {
         source={require('../assets/logo.png')}
         style={styles.img}
       />
-      <Input iconName={'mail-outline'} placeholder={"Email"} inputStyle={{ marginBottom: 16 }} />
-      <Input iconName={'lock-closed-outline'} placeholder={"Senha"} />
+      <Input 
+        iconName={'mail-outline'} 
+        placeholder={"Email"} 
+        inputStyle={{ marginBottom: 16 }} 
+        value={email}
+        onChangeText={setEmail}
+      />
+      <Input 
+        iconName={'lock-closed-outline'} 
+        placeholder={"Senha"} 
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
       <Button
         title="Adicionar"
         btnStyle={styles.btnStyle}
+        onPress={handleSignIn}
+        loading={loading}
       />
       <View style={{ flexDirection: 'row', marginTop: 12 }}>
         <Text>Não tem conta?</Text>
@@ -26,7 +53,7 @@ export default function App() {
           style={{ marginLeft: 12, fontWeight: 'bold' }}
         >
           Criar Conta
-        </Link> 
+        </Link>
       </View>
     </View>
   )

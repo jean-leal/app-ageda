@@ -1,5 +1,6 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+
 import colors from '../../constants/theme';
 
 export default function Button({ loading, btnStyle, title, ...rest }) {

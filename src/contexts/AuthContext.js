@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
 
     const [loading, setLoading] = useState(false);
   
-    async function SignUp({ name, email, password, passwordConfirm }) {
+    async function SignUp ({ name, email, password, passwordConfirm }) {
       setLoading(true);
       // validando de todos os campos estão preenchidos
       if (!name.trim() || !email.trim() || !password.trim() || !passwordConfirm.trim()) {
@@ -50,10 +50,40 @@ export function AuthProvider({ children }) {
   
     }
 
+    async function SignIn({ email, password }) {
+      setLoading(true);
+      // validando de todos os campos estão preenchidos
+      if (!email.trim() || !password.trim()) {
+        Alert.alert('Atenção', 'Preencha todos os campos');
+        setLoading(false);
+        return;
+      }
+  
+      // efetuando o login no banco, com email e senha
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      }).catch(error => {
+        Alert.alert('Error:', error);
+      });
+  
+      //caso de algum erro no login
+      if (error) {
+        Alert.alert('Error', error.message);
+        setLoading(false);
+        return;
+      }
+      //se nao der erro, continua 
+      setLoading(false);
+      router.replace('/home');
+    }
+
+
   return (
     <AuthContext.Provider value={{ 
-      setLoading,
-      SignUp}}>
+      loading,
+      SignUp, 
+      SignIn}}>
       {children}
     </AuthContext.Provider>
   );
