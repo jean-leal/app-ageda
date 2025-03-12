@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Stack, usePathname, router } from "expo-router";
 import { View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import colors from "../constants/theme";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
@@ -10,8 +11,14 @@ import { supabase } from "../lib/supabase";
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <MainLayout />
+      <SafeAreaProvider>
+        <StatusBar style={'light'} />
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
+          <MainLayout />
+        </SafeAreaView>
+      </SafeAreaProvider>
     </AuthProvider>
+
   )
 }
 
@@ -20,7 +27,7 @@ function MainLayout() {
   const { setAuth } = useAuth();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       // caso o usuario esteja logado, seta o usuario no contexto e redireciona para a tela home
       if (session?.user) {
         setAuth(session.user);
@@ -31,51 +38,52 @@ function MainLayout() {
       setAuth(null);
       router.replace('/signin');
     });
+    return () => {
+      listener.subscription.unsubscribe();
+    }
   }, []);
 
   return (
-    <AuthProvider>
-      <View style={{ flex: 1 }}>
-        <StatusBar style={pathname === '/signin' ? 'dark' : 'light'} />{/* mudando a cor do status bar de acordo com a tela ativa */}
-        <Stack
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: colors.primary,
-            },
-            headerTintColor: colors.white,
-            headerTitleStyle: {
-              fontWeight: "bold",
-              fontSize: 18,
+    <View style={{ flex: 1 }}>
+      <StatusBar style={pathname === '/signin' ? 'dark' : 'light'} />{/* mudando a cor do status bar de acordo com a tela ativa */}
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.primary,
+          },
+          headerTintColor: colors.white,
+          headerTitleStyle: {
+            fontWeight: "bold",
+            fontSize: 18,
 
-            }
+          }
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+            title: "Carregando"
           }}
-        >
-          <Stack.Screen
-            name="index"
-            options={{
-              headerShown: false,
-              title: "Carregando"
-            }}
-          />
-          <Stack.Screen
-            name="signin"
-            options={{
-              headerShown: false,
-              title: "Login"
-            }}
-          />
-          <Stack.Screen
-            name="signup"
-            options={{
-              title: "Cadastro"
-            }} />
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false
-            }} />
-        </Stack>
-      </View>
-    </AuthProvider>
+        />
+        <Stack.Screen
+          name="signin"
+          options={{
+            headerShown: false,
+            title: "Login"
+          }}
+        />
+        <Stack.Screen
+          name="signup"
+          options={{
+            title: "Cadastro"
+          }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false
+          }} />
+      </Stack>
+    </View>
   )
 }

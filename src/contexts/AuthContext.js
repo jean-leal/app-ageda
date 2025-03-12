@@ -78,8 +78,20 @@ export function AuthProvider({ children }) {
     router.replace('/(tabs)');
   }
 
-  function setAuth(authUser) {
-    setUser(authUser);
+  async function setAuth(authUser) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', authUser.id)
+      .single();
+
+    setUser(data);
+
+    if (error) {
+      Alert.alert('Error', error.message);
+      return;
+    }
+
   }
 
   return (

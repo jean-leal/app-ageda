@@ -1,20 +1,18 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
+import { StyleSheet } from 'react-native';
 
 import colors from '../../constants/theme';
 
 export default function TabLayout() {
   return (
+    
     <Tabs
       screenOptions={{
         tabBarInactiveTintColor: colors.gray,
         tabBarActiveTintColor: colors.white,
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: colors.primary,
-          borderTopColor: colors.white,
-          height: 70,
-        },
+        tabBarStyle: styles.tabBarStyle,
         tabBarShowLabel: false,
         tabBarItemStyle: {
           justifyContent: 'center',
@@ -62,3 +60,16 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarStyle: {
+    backgroundColor: colors.primary,
+    borderTopColor: colors.white,
+    height: 60,
+    bottom: 12,
+    marginLeft: 10,
+    marginRight: 10,
+    position: 'absolute',
+    borderRadius: 30,
+  },
+})
