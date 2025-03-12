@@ -5,8 +5,8 @@ import colors from '../../constants/theme';
 
 export default function Button({ loading, btnStyle, title, ...rest }) {
   return (
-    <View style={[styles.container, btnStyle]}>
-      <TouchableOpacity style={styles.btnArea} {...rest}>
+    <View style={styles.container}>
+      <TouchableOpacity style={[styles.btnArea, btnStyle]} {...rest}>
         <Text style={styles.btnText}>{loading ? 'Carregando...' : title}</Text>
       </TouchableOpacity>
     </View>
