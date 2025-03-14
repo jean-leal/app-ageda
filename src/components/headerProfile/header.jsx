@@ -18,13 +18,14 @@ export default function Header() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 70,
+    height: 80,
     alignItems: 'center',
     backgroundColor: colors.primary, 
     flexDirection: 'row',
     paddingHorizontal:8, 
     paddingBottom: 8, 
     borderBottomLeftRadius: 40, 
+    paddingTop: 8
   },
   img:{
     width: 60, 
