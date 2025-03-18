@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
    paddingHorizontal: 12,
     color: colors.white, 
     fontSize: 18,
+    flexShrink: 1
   }
 
 });

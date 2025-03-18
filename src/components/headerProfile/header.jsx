@@ -10,7 +10,7 @@ export default function Header() {
   return(
     <View style={styles.container}>
       <Image source={require('../../assets/user.png')} style={styles.img} />
-      <Text style={styles.text}>{user?.name}</Text>
+      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>{user?.name}</Text>
     </View>
   )
 }
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
     fontSize: 24,
-    marginLeft: 12
+    marginLeft: 12,
+    flexShrink: 1
   }
 });

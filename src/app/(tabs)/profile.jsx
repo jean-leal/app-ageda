@@ -8,10 +8,11 @@ import ModalProfile from '../(modals)/modalProfile';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import colors from '../../constants/theme';
+import { phoneMask } from '../../utils/masks/phone';
 
 
 export default function Tab() {
-  const [ openModal, setOpenModal ] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const { setAuth, user } = useAuth();
 
   async function handleSignOut() {
@@ -27,17 +28,17 @@ export default function Tab() {
     <View style={styles.container}>
       <View style={styles.containerImg}>
         <Image source={require('../../assets/user.png')} style={styles.img} />
-        <Text style={styles.title}>{user?.name}</Text>
-      </View>
+          <Text style={styles.title}  numberOfLines={1} ellipsizeMode="tail">{user?.name}</Text>
+        </View>
       <ItemProfile iconName="mail" text={user?.email} />
-      <ItemProfile iconName="home" text={user?.road || 'Rua não cadastrada'} />
-      <ItemProfile iconName="pin" text={user?.cidade || 'Cidade não cadastrada'} />
-      <ItemProfile iconName="call" text={user?.phone || 'Telefone não cadastrado'} />
+      <ItemProfile iconName="home" text={`${user?.address} - ${user?.number}` || 'Rua não cadastrada'} />
+      <ItemProfile iconName="location" text={`${user?.city} - ${user?.state}` || 'Cidade não cadastrada'} />
+      <ItemProfile iconName="call" text={phoneMask(user?.phone) || 'Telefone não cadastrado'} />
       <Button title="Editar" onPress={() => setOpenModal(true)} btnStyle={{ marginTop: 50 }} />
       <Button title="Sair do App" onPress={handleSignOut} btnStyle={{ backgroundColor: colors.grayLight }} />
-      
-      <Modal visible= {openModal} animationType="slide" backgroundColor="rgba(0,0,0,0.5)">
-        <ModalProfile closeModal={() => setOpenModal(false)}/>
+
+      <Modal visible={openModal} animationType="slide" backgroundColor="rgba(0,0,0,0.5)">
+        <ModalProfile closeModal={() => setOpenModal(false)} />
       </Modal>
     </View>
   );
@@ -57,17 +58,18 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   containerImg: {
-    width: "100%",
+    width: '100%',
     borderBottomWidth: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingBottom: 28,
     flexDirection: 'row',
-    marginBottom: 24
+    marginBottom: 24,
+    overflow: 'hidden'
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     marginLeft: 18,
+    flexShrink: 1
   }
 });

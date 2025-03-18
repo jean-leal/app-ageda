@@ -94,13 +94,28 @@ export function AuthProvider({ children }) {
 
   }
 
+  async function UpdateUser(userUpdate) {
+    const {data, error} = await supabase
+      .from('users')
+      .update(userUpdate)
+      .eq('id', user.id)
+      .single();
+    if (error) {
+      Alert.alert('Error', error.message);
+      return false;
+    }
+    setUser({...user, ...userUpdate});
+    return true;
+  }
+
   return (
     <AuthContext.Provider value={{
       loading,
       SignUp,
       SignIn,
       user,
-      setAuth
+      setAuth, 
+      UpdateUser
     }}>
       {children}
     </AuthContext.Provider>
