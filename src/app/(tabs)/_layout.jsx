@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderTopColor: colors.white,
     height: 60,
-    bottom: 12,
+    bottom: 6,
     marginLeft: 10,
     marginRight: 10,
     position: 'absolute',

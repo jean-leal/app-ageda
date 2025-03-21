@@ -27,7 +27,9 @@ export default function Tab() {
   return (
     <View style={styles.container}>
       <View style={styles.containerImg}>
-        <Image source={require('../../assets/user.png')} style={styles.img} />
+        <Image 
+          source={ user?.url_image ? {uri: user?.url_image} : require('../../assets/user.png')} 
+          style={styles.img} />
           <Text style={styles.title}  numberOfLines={1} ellipsizeMode="tail">{user?.name}</Text>
         </View>
       <ItemProfile iconName="mail" text={user?.email} />
@@ -53,8 +55,8 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   img: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     borderRadius: 60,
   },
   containerImg: {

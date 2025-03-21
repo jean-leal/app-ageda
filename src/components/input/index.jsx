@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     color: colors.black, 
     fontSize: 18,
+    flexShrink: 1
   }
 
 });

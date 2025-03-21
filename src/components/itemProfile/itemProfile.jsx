@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   inputArea: {
     backgroundColor: colors.primary,
     width: "100%",
-    height: 58,
+    height: 56,
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 10,

@@ -6,10 +6,12 @@ import colors from '../../constants/theme';
 
 export default function Header() {
   const { user } = useAuth();
-  
-  return(
+
+  return (
     <View style={styles.container}>
-      <Image source={require('../../assets/user.png')} style={styles.img} />
+      <Image
+        source={user?.url_image ? { uri: user?.url_image } : require('../../assets/user.png')}
+        style={styles.img} />
       <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>{user?.name}</Text>
     </View>
   )
@@ -20,19 +22,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 80,
     alignItems: 'center',
-    backgroundColor: colors.primary, 
+    backgroundColor: colors.primary,
     flexDirection: 'row',
-    paddingHorizontal:8, 
-    paddingBottom: 8, 
-    borderBottomLeftRadius: 40, 
+    paddingHorizontal: 8,
+    paddingBottom: 8,
+    borderBottomLeftRadius: 40,
     paddingTop: 8
   },
-  img:{
-    width: 60, 
+  img: {
+    borderWidth: 2,
+    borderColor: colors.white,
+    width: 60,
     height: 60,
     borderRadius: 100
   },
-  text:{
+  text: {
     color: colors.white,
     fontWeight: 'bold',
     fontSize: 24,

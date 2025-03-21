@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useReducer, useState } from "react";
 import { Alert } from "react-native";
 import { router } from 'expo-router';
+import * as FileSystem from 'expo-file-system';
+import { decode } from 'base64-arraybuffer';
 
 import { supabase } from '../lib/supabase';
 
@@ -95,17 +97,59 @@ export function AuthProvider({ children }) {
   }
 
   async function UpdateUser(userUpdate) {
-    const {data, error} = await supabase
-      .from('users')
-      .update(userUpdate)
-      .eq('id', user.id)
-      .single();
-    if (error) {
-      Alert.alert('Error', error.message);
-      return false;
+
+      const {data, error} = await supabase
+        .from('users')
+        .update(userUpdate)
+        .eq('id', user.id)
+        .single();
+      if (error) {
+        Alert.alert('Error', error.message);
+        return false;
+      }
+      setUser({...user, ...userUpdate});
+      return true;
+      
+  }
+  async function uploadImg(uri) {
+    try {
+      // Ler o arquivo como Base64
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      if (!base64) {
+        throw new Error("Falha ao ler a imagem");
+      }
+
+      // Converter Base64 para ArrayBuffer (necessário para o Supabase)
+      const arrayBuffer = decode(base64);
+      // Criar um nome para a imagem
+      const fileName = `${user.id}_${Date.now()}.jpeg`;
+
+      // Upload para o Supabase
+      const { data, error } = await supabase.storage
+        .from("pictures")
+        .upload(fileName, arrayBuffer, { contentType: "image/jpeg", upsert: true });
+
+      if (error) {
+        Alert.alert("Erro ao enviar imagem", error.message);
+        return;
+      }
+
+      // Obter a URL pública da imagem
+      const { data: publicUrlData } = supabase.storage
+        .from("pictures")
+        .getPublicUrl(fileName);
+
+      if (!publicUrlData.publicUrl) {
+        throw new Error("Erro ao recuperar URL pública.");
+      }
+      return (publicUrlData.publicUrl)
+
+    } catch (error) {
+      Alert.alert("Erro inesperado", error.message);
     }
-    setUser({...user, ...userUpdate});
-    return true;
   }
 
   return (
@@ -114,8 +158,9 @@ export function AuthProvider({ children }) {
       SignUp,
       SignIn,
       user,
-      setAuth, 
-      UpdateUser
+      setAuth,
+      UpdateUser,
+      uploadImg
     }}>
       {children}
     </AuthContext.Provider>
