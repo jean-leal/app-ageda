@@ -43,6 +43,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={32} name="calendar-clear" color={color} />,
         }}
       />
+       <Tabs.Screen
+        name="works"
+        options={{
+          title: 'Trabalhos',
+          tabBarIcon: ({ color }) => <Ionicons size={32} name="hammer" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="services"
         options={{
@@ -57,6 +64,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons size={32} name="person" color={color} />,
         }}
       />
+     
     </Tabs>
   );
 }

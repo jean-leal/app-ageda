@@ -7,9 +7,8 @@ export default function Tab() {
       <Header/>
       <View>
 
-      <Text>Tab [Home|Settings]</Text>
+      <Text>Works</Text>
       </View>
-      
     </View>
   );
 }
