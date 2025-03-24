@@ -46,14 +46,14 @@ export default function TabLayout() {
        <Tabs.Screen
         name="works"
         options={{
-          title: 'Trabalhos',
+          title: 'Serviços',
           tabBarIcon: ({ color }) => <Ionicons size={32} name="hammer" color={color} />,
         }}
       />
       <Tabs.Screen
         name="services"
         options={{
-          title: 'Serviços',
+          title: 'Atendimento',
           tabBarIcon: ({ color }) => <Ionicons size={32} name="cog" color={color} />,
         }}
       />
@@ -79,5 +79,5 @@ const styles = StyleSheet.create({
     marginRight: 10,
     position: 'absolute',
     borderRadius: 30,
-  },
-})
+    borderTopWidth: 0, // Remove a linha superior padrão
+}})

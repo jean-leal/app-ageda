@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingBottom: 8,
     borderBottomLeftRadius: 40,
-    paddingTop: 8
+    paddingTop: 8, 
   },
   img: {
     borderWidth: 2,

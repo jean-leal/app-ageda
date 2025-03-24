@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Header from '../../components/headerProfile/header.jsx'
 
-export default function Tab() {
+export default function Works() {
   return (
     <View style={styles.container}>
       <Header/>
