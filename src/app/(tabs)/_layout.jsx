@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     bottom: 6,
     marginLeft: 10,
     marginRight: 10,
-    position: 'absolute',
+    //position: 'absolute',
     borderRadius: 30,
     borderTopWidth: 0, // Remove a linha superior padrão
 }})
