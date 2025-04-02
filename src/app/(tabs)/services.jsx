@@ -48,7 +48,7 @@ export default function Services() {
   useEffect(() => {
     async function DaysWeek() {
       try {
-        //faz uma consulta no banco para trazendo as informações dos cadastros feitos 
+        //faz uma consulta no banco para trazendo as informações dos cadastros feitos considerando o campo user_id igual a do usuario logado 
         const { data, error } = await supabase
           .from('services')
           .select('*')
