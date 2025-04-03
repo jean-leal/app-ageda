@@ -15,7 +15,6 @@ export default function Button({ loading, btnStyle, title, ...rest }) {
 
 const styles = StyleSheet.create({
   container:{
-    width: "auto",
     minWidth:100,
     justifyContent: "center",
     alignItems: "center",

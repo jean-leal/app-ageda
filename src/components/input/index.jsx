@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TextInput, Text } from "react-native";
+import { StyleSheet, View, TextInput } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   }, 
   input:{
-    width: "100%",
+    //width: "100%",
     height: 50,
     paddingLeft: 10,
     paddingRight: 10,

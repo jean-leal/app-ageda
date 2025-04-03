@@ -4,7 +4,6 @@ import {
   Text,
   Switch,
   FlatList,
-  TextInput,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -13,10 +12,12 @@ import {
 
 import Header from '../../components/headerProfile/header';
 import colors from '../../constants/theme';
-import { timeMask } from '../../utils/masks/time';
 import Button from '../../components/button';
+import Input from '../../components/input';
+import TimeInput from '../../components/timeInput';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { maskTime } from '../../utils/masks/time';
 
 export default function Services() {
   const { user } = useAuth();
@@ -29,82 +30,71 @@ export default function Services() {
     { id: 4, ativo: false, display: "Quinta", abertura: "08:00", fechamento: "18:00" },
     { id: 5, ativo: false, display: "Sexta", abertura: "08:00", fechamento: "18:00" },
     { id: 6, ativo: false, display: "Sábado", abertura: "08:00", fechamento: "18:00" },
-  ])
+  ]);
 
-  // alterando o dia, se esta ativou o inativo. 
   const toggleSwitch = (id) => {
     setWorking(prev => prev.map(day =>
       day.id === id ? { ...day, ativo: !day.ativo } : day
     ));
   };
 
-  //função para adicionar o valor do dia de abertura ou fechamento dependendo do "type" que passar  
-  const handleTimeChange = (id, event, type) => {
-    setWorking(prev => prev.map(day =>
-      day.id === id ? { ...day, [type]: event } : day
-    ));
+  const handleTimeChange = (id, value, type) => {
+    setWorking(prev => {
+      const newWorking = prev.map(day =>
+        day.id === id ? { ...day, [type]: value } : day
+      );
+      return [...newWorking];
+    });
   };
 
   useEffect(() => {
     async function DaysWeek() {
       try {
-        //faz uma consulta no banco para trazendo as informações dos cadastros feitos considerando o campo user_id igual a do usuario logado 
         const { data, error } = await supabase
           .from('services')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', user.id);
 
-        // se encontrar algum registro adiciona as informações no setWorking 
         if (data.length > 0) {
-          setWorking(data[0]?.days_week)
+          setWorking(data[0]?.days_week);
         }
-        return
       } catch (error) {
         Alert.alert("Erro ao carregar os dados");
-        return
       }
     }
-    DaysWeek()
+    DaysWeek();
+  }, []);
 
-  }, [])
   async function HandleUpdate() {
-    //confirma se já tem algum cadastro criado para o usuario logado 
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('services')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', user.id);
 
     if (data?.length <= 0) {
-      // caso não tenha nenhum registro ele cria um novo         
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('services')
-        .insert(
-          {
-            user_id: user.id,
-            days_week: working
-          }
-        )
-        .select()
+        .insert({
+          user_id: user.id,
+          days_week: working
+        });
 
-      //caso retorne algum erro 
       if (error) {
-        Alert.alert('Erro ao inserir:', insertError);
+        Alert.alert('Erro ao inserir:', error.message);
       } else {
         Alert.alert('Novo cadastro criado!');
       }
     } else {
-      // se tiver registro ele atualiza o cadastro ja efetuado com as informações em "working"
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('services')
-        .update({ days_week: working })  
+        .update({ days_week: working })
         .eq('user_id', user.id);
-      if (updateError) {
-        Alert.alert('Erro ao atualizar:', updateError);
+      if (error) {
+        Alert.alert('Erro ao atualizar:', error.message);
       } else {
         Alert.alert('Cadastro atualizado com sucesso!');
       }
     }
-
   }
 
   return (
@@ -116,11 +106,7 @@ export default function Services() {
           showsVerticalScrollIndicator={false}
           data={working}
           keyExtractor={item => item.id.toString()}
-          ListHeaderComponent={(
-            <>
-              <Text style={styles.title}>Atendimento</Text>
-            </>
-          )}
+          ListHeaderComponent={<Text style={styles.title}>Atendimento</Text>}
           renderItem={({ item }) => (
             <View style={styles.containerItem}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -132,32 +118,31 @@ export default function Services() {
                 <View style={styles.containerHorario}>
                   <View>
                     <Text style={styles.text}>Horário de Abertura:</Text>
-                    <TextInput
-                      style={styles.inputHorario}
-                      placeholder="00:00"
+                    <Input
+                      inputStyle={styles.inputHorario}
+                      placeholder='0:00'
+                      iconName={'time'}
                       keyboardType="numeric"
                       value={item.abertura}
+                      onChangeText={(value) => handleTimeChange(item.id, maskTime(value), 'abertura')}
                       maxLength={5}
-                      iconName={'time-outline'}
-                      onChangeText={(event) => handleTimeChange(item.id, timeMask(event), 'abertura')}
                     />
                   </View>
                   <View>
                     <Text style={styles.text}>Horário de Fechamento:</Text>
-                    <TextInput
-                      style={styles.inputHorario}
-                      placeholder="00:00"
+                    <Input
+                      inputStyle={styles.inputHorario}
+                      placeholder='0:00'
+                      iconName={'time'}
                       keyboardType="numeric"
-                      maxLength={5}
                       value={item.fechamento}
-                      iconName={'time-outline'}
-                      onChangeText={(event) => handleTimeChange(item.id, timeMask(event), 'fechamento')}
+                      onChangeText={(value) => handleTimeChange(item.id, maskTime(value), 'fechamento')}
+                      maxLength={5}
                     />
                   </View>
                 </View>
               )}
             </View>
-
           )}
           ListFooterComponent={<View style={{ height: 80 }} ><Button btnStyle={{ width: '50%' }} title={'Salvar'} onPress={HandleUpdate} /></View>}
         />
@@ -202,11 +187,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   inputHorario: {
+    ////idth: 100,
     backgroundColor: colors.white,
-    borderRadius: 5,
-    fontSize: 16,
     textAlign: 'center',
     marginTop: 6,
-    padding: 8
   }
-})
+});

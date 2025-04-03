@@ -8,6 +8,9 @@ import { supabase } from '../../lib/supabase';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import colors from '../../constants/theme';
+import {maskTime} from '../../utils/masks/time';
+import { minutesToTime } from '../../utils/functions/time';
+import { priceMask } from '../../utils/masks/price';
 
 export default function ModalWork({ closeModal, titleModal, refreshList, editWork, resetState }) {
   const { user } = useAuth();
@@ -19,7 +22,7 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
     //sempre que e aberto a tela do modal, o useEffect verifica se foi passado algo em editWork, caso tenha passa aos states para um update. 
     if (titleModal === 'Editar' && editWork) {
       setName(editWork.name);
-      setDuration(editWork.duration);
+      setDuration(minutesToTime(editWork.duration));
       setPrice(editWork.price);
     } else {
       setName('');
@@ -28,6 +31,13 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
     }
   }, [titleModal, editWork]);
 
+  //transformando hora passada em duration em minutos para salvar no banco como numero inteiro 
+  function timeToMinutes(time) {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
+
   async function HandleRegister() {
     //verifica se todos os campos estão preenchidos.
     if (!name || !duration || !price) {
@@ -35,13 +45,15 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
     }
     let response;
 
+    const durationInMinutes = timeToMinutes(duration);
+
     if (editWork) {
       // se editWork existir, fa o update 
       response = await supabase
         .from('works')
         .update({
           name,
-          duration,
+          duration: durationInMinutes,
           price
         })
         .match({ id: editWork.id }); // garante que esta editando o serviço correto
@@ -54,7 +66,7 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
           {
             user_id: user.id,
             name,
-            duration,
+            duration: durationInMinutes,
             price
           }
         ]);
@@ -101,6 +113,7 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
     );
   }
 
+
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
@@ -118,14 +131,16 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
           onChangeText={(e) => setName(e)}
         />
         <View style={{ flexDirection: 'row' }}>
-          <View style={{ flex: 1, overflow: 'hidden', marginRight: 10 }}>
+          <View style={{ flex: 1, overflow: 'hidden', marginRight: 10 }}
+          >
             <Text style={styles.text}>Duração:</Text>
             <Input
-              placeholder='12:00'
+              placeholder='0:00'
               iconName={'time'}
               keyboardType="numeric"
               value={duration}
-              onChangeText={(e) => setDuration(e)}
+              onChangeText={(e) => setDuration(maskTime(e))}
+              maxLength={5} 
             />
           </View>
           <View style={{ flex: 1, overflow: 'hidden' }}>
@@ -135,15 +150,15 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
               iconName={'cash'}
               keyboardType="numeric"
               value={price}
-              onChangeText={(e) => setPrice(e)}
+              onChangeText={(e) => setPrice(priceMask(e))}
             />
           </View>
         </View>
         <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
           {titleModal === 'Editar' &&
-            <Button 
-              title={'Excluir'} 
-              btnStyle={{ backgroundColor: colors.danger }} 
+            <Button
+              title={'Excluir'}
+              btnStyle={{ backgroundColor: colors.danger }}
               onPress={() => handleDelete(editWork.id)}
             />}
           <Button title={'Salvar'} onPress={HandleRegister} />

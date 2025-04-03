@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
 import Header from '../../components/headerProfile/header.jsx';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import colors from '../../constants/theme.js';
 import ModalWork from '../(modals)/modalWork.jsx';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { minutesToTime } from '../../utils/functions/time'
 
 export default function Works() {
   const { user } = useAuth()
@@ -41,7 +43,7 @@ export default function Works() {
   function EdtiWork(work) {
     setSelectWork(work)
     setTitleModal('Editar')
-    setOpenModal(true)    
+    setOpenModal(true)
   }
 
   //resetando os states do modal para não afetar quando clicar no botao de novo registro
@@ -69,15 +71,15 @@ export default function Works() {
               <View style={styles.itemContainer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 }}>
                   <Text style={styles.titleItem}>{item.name}</Text>
-                  <TouchableOpacity onPress={() => EdtiWork(item)}>
-                    <Ionicons style={styles.icon} name={"pencil"} size={26} color={colors.white} />
+                  <TouchableOpacity onPress={() => EdtiWork(item)}style={{backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 40, height: 40, alignItems: 'center'}}>
+                    <FontAwesome style={styles.icon} name={"pencil"} size={22} color={colors.primary} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.itemTime}>
                   <TouchableOpacity>
                     <Ionicons style={styles.icon} name={"time-outline"} size={28} color={colors.white} />
                   </TouchableOpacity>
-                  <Text style={styles.text}>{item.duration}</Text>
+                  <Text style={styles.text}>{minutesToTime(item.duration)}</Text>
                 </View>
                 <View style={styles.itemTime}>
                   <TouchableOpacity>

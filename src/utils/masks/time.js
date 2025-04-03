@@ -1,6 +1,12 @@
-export function timeMask(value) {
-  return value
-    .replace(/\D/g, "") // Remove tudo que não for número
-    .replace(/^(\d{2})(\d)/, "$1:$2") // Insere ":" após os dois primeiros números
-    .slice(0, 5); // Garante que só tenha no máximo 5 caracteres (HH:mm)
-}
+export const maskTime = (input) => {
+  let cleaned = input.replace(/\D/g, ""); // Remove caracteres não numéricos
+
+  if (cleaned.length > 4) cleaned = cleaned.slice(0, 4); // Limita a 4 números
+
+  let formatted = cleaned;
+  if (cleaned.length >= 3) {
+    formatted = `${cleaned.slice(0, 2)}:${cleaned.slice(2)}`;
+  }
+
+  return formatted;
+};
