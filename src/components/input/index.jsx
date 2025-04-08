@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     color: colors.black, 
-    fontSize: 18,
+    fontSize: 16,
     flexShrink: 1
   }
 

@@ -55,12 +55,15 @@ export default function Works() {
   return (
     <View style={styles.container}>
       <Header />
+      {
+        //deixando o botão flutuante fora do corpo para ficar no rodape  
+      }
+      <TouchableOpacity onPress={() => setOpenModal(true)} style={styles.fab}>
+        <Ionicons style={styles.icon} name={"add"} size={40} color={colors.white} />
+      </TouchableOpacity>
       <View style={styles.body}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={styles.title}>Serviços</Text>
-          <TouchableOpacity onPress={() => setOpenModal(true)}>
-            <Ionicons style={styles.icon} name={"add-circle"} size={40} color={colors.primary} />
-          </TouchableOpacity>
         </View>
         {works.length === 0 ? <Text style={{ textAlign: 'center', fontSize: 16, marginTop: 12 }}>Nenhum serviço cadastrado...</Text> :
           <FlatList
@@ -71,20 +74,16 @@ export default function Works() {
               <View style={styles.itemContainer}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 }}>
                   <Text style={styles.titleItem}>{item.name}</Text>
-                  <TouchableOpacity onPress={() => EdtiWork(item)}style={{backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 40, height: 40, alignItems: 'center'}}>
+                  <TouchableOpacity onPress={() => EdtiWork(item)} style={{ backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 40, height: 40, alignItems: 'center' }}>
                     <FontAwesome style={styles.icon} name={"pencil"} size={22} color={colors.primary} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.itemTime}>
-                  <TouchableOpacity>
-                    <Ionicons style={styles.icon} name={"time-outline"} size={28} color={colors.white} />
-                  </TouchableOpacity>
+                  <Ionicons style={styles.icon} name={"time-outline"} size={28} color={colors.white} />
                   <Text style={styles.text}>{minutesToTime(item.duration)}</Text>
                 </View>
                 <View style={styles.itemTime}>
-                  <TouchableOpacity>
-                    <Ionicons style={styles.icon} name={"cash-outline"} size={28} color={colors.white} />
-                  </TouchableOpacity>
+                  <Ionicons style={styles.icon} name={"cash-outline"} size={28} color={colors.white} />
                   <Text style={styles.text}>{item.price}</Text>
                 </View>
               </View>
@@ -114,6 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: colors.white,
   },
   body: {
     flex: 1,
@@ -121,9 +121,11 @@ const styles = StyleSheet.create({
     padding: 16
   },
   title: {
-    fontSize: 20,
+    width: "100%",
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: 12,
   },
   itemContainer: {
     backgroundColor: colors.primary,
@@ -145,5 +147,22 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 10,
     color: colors.white
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20, // ajuste conforme necessário para não ficar colado na barra
+    backgroundColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5, // para Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5, // para iOS
+    zIndex: 1, // para garantir que fique acima de outros componentes
   }
 });

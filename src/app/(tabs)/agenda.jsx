@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Header from '../../components/headerProfile/header.jsx'
+import colors from '../../constants/theme.js';
 
 export default function Tab() {
   return (
@@ -16,6 +17,7 @@ export default function Tab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.white,
     alignItems: 'center',
   },
 });

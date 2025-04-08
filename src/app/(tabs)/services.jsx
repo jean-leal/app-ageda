@@ -157,13 +157,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   body: {
-    marginHorizontal: 16,
-    marginBottom: 160
+    marginBottom: 160, 
+    margin: 16
   },
   title: {
     width: 'auto',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginTop: 12,
     marginBottom: 12

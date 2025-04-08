@@ -15,13 +15,14 @@ export default function Button({ loading, btnStyle, title, ...rest }) {
 
 const styles = StyleSheet.create({
   container:{
-    minWidth:100,
+    width:'100%',
     justifyContent: "center",
     alignItems: "center",
     margin:10, 
+    flexShrink: 1
   },
   btnArea: {
-    width: "100%",
+    width: "auto",
     height: 50,
     justifyContent: "center",
     alignItems: "center",
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: colors.white,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   }
 

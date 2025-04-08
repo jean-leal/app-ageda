@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   title: {
-    fontSize: 30,
+    fontSize: 26,
     fontWeight: 'bold',
     marginLeft: 18,
     flexShrink: 1

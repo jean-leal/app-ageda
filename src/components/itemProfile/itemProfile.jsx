@@ -5,13 +5,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import colors from '../../constants/theme';
 
-export default function ItemProfile({iconName, itemStyle, text, ...rest}) {
+export default function ItemProfile({ iconName, itemStyle, text, ...rest }) {
   return (
     <View style={[styles.inputArea, itemStyle]}>
-      <Ionicons style={styles.icon} name={iconName || "search"} size={24} color={colors.grayLight}/>
+      <Ionicons style={styles.icon} name={iconName || "search"} size={24} color={colors.grayLight} />
       <Text style={styles.text}>{text}</Text>
     </View>
-    
+
   );
 }
 
@@ -23,17 +23,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 10,
-    marginBottom:16
+    marginBottom: 16
   },
-  icon:{
+  icon: {
     paddingLeft: 16,
     color: colors.white
-  }, 
-  text:{
+  },
+  text: {
     fontWeight: 'bold',
-   paddingHorizontal: 12,
-    color: colors.white, 
-    fontSize: 18,
+    paddingHorizontal: 12,
+    color: colors.white,
+    fontSize: 16,
     flexShrink: 1
   }
 

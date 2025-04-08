@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 
 import Header from '../../components/headerProfile/header.jsx'
+import colors from '../../constants/theme.js';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.white,
   },
   body: {
     flex: 1,
