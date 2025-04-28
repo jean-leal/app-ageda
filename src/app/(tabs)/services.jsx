@@ -164,9 +164,8 @@ const styles = StyleSheet.create({
     width: 'auto',
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 12,
-    marginBottom: 12
+    fontWeight: 'bold', 
+    marginBottom: 18
   },
   containerItem: {
     marginBottom: 12,

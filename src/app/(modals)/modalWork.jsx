@@ -8,7 +8,7 @@ import { supabase } from '../../lib/supabase';
 import Input from '../../components/input';
 import Button from '../../components/button';
 import colors from '../../constants/theme';
-import {maskTime} from '../../utils/masks/time';
+import { maskTime } from '../../utils/masks/time';
 import { minutesToTime } from '../../utils/functions/time';
 import { priceMask } from '../../utils/masks/price';
 
@@ -140,7 +140,7 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
               keyboardType="numeric"
               value={duration}
               onChangeText={(e) => setDuration(maskTime(e))}
-              maxLength={5} 
+              maxLength={5}
             />
           </View>
           <View style={{ flex: 1, overflow: 'hidden' }}>
@@ -154,14 +154,14 @@ export default function ModalWork({ closeModal, titleModal, refreshList, editWor
             />
           </View>
         </View>
-        <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
+        <View style={styles.containerBtn}>
           {titleModal === 'Editar' &&
             <Button
               title={'Excluir'}
-              btnStyle={{ backgroundColor: colors.danger }}
+              btnStyle={{ backgroundColor: colors.danger, width: '40%', marginRight: 10 }}
               onPress={() => handleDelete(editWork.id)}
             />}
-          <Button title={'Salvar'} onPress={HandleRegister} />
+          <Button btnStyle={styles.btn} title={'Salvar'} onPress={HandleRegister} />
         </View>
 
       </View>
@@ -182,6 +182,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12, overflow: "hidden"
   },
+  containerBtn: {
+    flexDirection: 'row',
+    width: '100%',
+    alignContent: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  }
+  ,
   boxTitle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -200,5 +208,8 @@ const styles = StyleSheet.create({
   },
   text: {
     marginBottom: 6
+  },
+  btn: {
+    width: '40%'
   }
 });

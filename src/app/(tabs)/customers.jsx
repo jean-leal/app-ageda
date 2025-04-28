@@ -2,40 +2,80 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 import Header from '../../components/headerProfile/header.jsx';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import ItemCustomer from '../../components/itemCustomer/itemCustomer.jsx';
+
+import { useAuth } from '../../contexts/AuthContext';
 
 import colors from '../../constants/theme.js';
+import ModalCustomer from '../(modals)/modalCustomer.jsx';
+import { supabase } from '../../lib/supabase.js';
 
-export default function Tab() {
+export default function Customers() {
+  const { user } = useAuth();
+  const [openModal, setOpenModal] = useState(false);
+  const [titleModal, setTitleModal] = useState('Cadastro');
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    async function Customers () {
+      try {
+        const { data, error } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('user_id', user.id);
+   
+        if (data.length > 0) {
+         setCustomers(data);
+        }
+      } catch (error) {
+        Alert.alert("Erro ao carregar os dados");
+      }
+    }
+
+    Customers();
+  }, [])
   return (
     <View style={styles.container}>
       <Header />
-       {
+      {
         //deixando o botão flutuante fora do corpo para ficar no rodape  
       }
-      <TouchableOpacity onPress={() => ''} style={styles.fab}>
+      <TouchableOpacity onPress={() => setOpenModal(true)} style={styles.fab}>
         <Ionicons style={styles.icon} name={"add"} size={40} color={colors.white} />
       </TouchableOpacity>
       <View style={styles.body}>
-        <View style={styles.itemContainer}>
-          <Image source={require('../../assets/user.png')} style={styles.img} />
-          <View style={{ flex: 1, paddingLeft: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Text style={styles.titleItem}>Cliente Maria de Lourdes</Text>
-              <TouchableOpacity onPress={() => ''} style={{ backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 36, height: 36, alignItems: 'center' }}>
-                <FontAwesome style={styles.icon} name={"pencil"} size={18} color={colors.primary} />
-              </TouchableOpacity>
+        <FlatList
+          data={customers}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <ItemCustomer
+              customer={item}
+              openModal={() => setOpenModal(true)}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={styles.title}>Nenhum cliente cadastrado</Text>
             </View>
-            <View style={styles.itemTime}>
-              <Ionicons style={styles.icon} name={"mail-outline"} size={28} color={colors.white} />
-              <Text style={styles.text}>marialoudes@gmail.com</Text>
+          )}
+          ListHeaderComponent={() => (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 16}}>
+              <Text style={styles.title}>Clientes</Text>
             </View>
-            <View style={styles.itemTime}>
-              <Ionicons style={styles.icon} name={"call-outline"} size={28} color={colors.white} />
-              <Text style={styles.text}>(44) 9 9999-9999</Text>
-            </View>
-          </View>
-        </View>
+          )}
+        />
+        
+        <Modal
+          transparent
+          visible={openModal}
+          animationType="fade"
+        >
+          <ModalCustomer
+            titleModal={titleModal}
+            closeModal={() => setOpenModal(false)}
+          />
+        </Modal>
       </View>
     </View>
   );
@@ -52,7 +92,7 @@ const styles = StyleSheet.create({
     padding: 16
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center'
   },
@@ -80,8 +120,8 @@ const styles = StyleSheet.create({
   img: {
     borderWidth: 2,
     borderColor: colors.white,
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 50
   },
   fab: {

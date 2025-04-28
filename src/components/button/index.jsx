@@ -5,22 +5,14 @@ import colors from '../../constants/theme';
 
 export default function Button({ loading, btnStyle, title, ...rest }) {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={[styles.btnArea, btnStyle]} {...rest}>
-        <Text style={styles.btnText}>{loading ? 'Carregando...' : title}</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={[styles.btnArea, btnStyle]} {...rest}>
+      <Text style={styles.btnText}>{loading ? 'Carregando...' : title}</Text>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container:{
-    width:'100%',
-    justifyContent: "center",
-    alignItems: "center",
-    margin:10, 
-    flexShrink: 1
-  },
+
   btnArea: {
     width: "auto",
     height: 50,
@@ -29,6 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     padding: 10,
     borderRadius: 10,
+    flexShrink: 1
   },
   btnText: {
     color: colors.white,

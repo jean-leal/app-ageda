@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 18,
   },
   itemContainer: {
     backgroundColor: colors.primary,
-    borderRadius: 5,
-    marginTop: 12,
+    borderRadius: 10,
+    marginBottom: 12,
     paddingBottom: 10
   },
   titleItem: {

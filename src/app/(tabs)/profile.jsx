@@ -37,7 +37,7 @@ export default function Tab() {
       <ItemProfile iconName="location" text={`${user?.city} - ${user?.state}` || 'Cidade não cadastrada'} />
       <ItemProfile iconName="call" text={phoneMask(user?.phone) || 'Telefone não cadastrado'} />
       <Button title="Editar" onPress={() => setOpenModal(true)} btnStyle={{ marginTop: 50, width: '90%' }} />
-      <Button title="Sair do App" onPress={handleSignOut} btnStyle={{ backgroundColor: colors.grayLight, width: '90%' }} />
+      <Button title="Sair do App" onPress={handleSignOut} btnStyle={{ backgroundColor: colors.grayLight, width: '90%', marginTop: 12 }} />
 
       <Modal visible={openModal} animationType="slide" backgroundColor="rgba(0,0,0,0.5)">
         <ModalProfile closeModal={() => setOpenModal(false)} />
