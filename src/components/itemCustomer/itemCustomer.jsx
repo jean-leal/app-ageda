@@ -7,10 +7,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import colors from '../../constants/theme.js';
 import { phoneMask } from '../../utils/masks/phone.js';
 
-export default function ItemCustomer({ openModal, customer }) {
-  
-  const [titleModal, setTitleModal] = useState('Cadastro');
-  
+export default function ItemCustomer({ customer, editCustomer }) {  
 
   return (
     <View style={styles.body}>
@@ -19,7 +16,10 @@ export default function ItemCustomer({ openModal, customer }) {
         <View style={{ flex: 1, paddingLeft: 10 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={styles.titleItem}>{customer.name}</Text>
-            <TouchableOpacity onPress={() => openModal()} style={{ backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 36, height: 36, alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => {
+              editCustomer()
+            }} 
+              style={{ backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 36, height: 36, alignItems: 'center' }}>
               <FontAwesome style={styles.icon} name={"pencil"} size={18} color={colors.primary} />
             </TouchableOpacity>
           </View>

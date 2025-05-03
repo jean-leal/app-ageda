@@ -10,10 +10,20 @@ import Button from '../../components/button';
 import colors from '../../constants/theme';
 import { phoneMask } from '../../utils/masks/phone';
 
-export default function ModalCustomer({ closeModal, titleModal }) {
+export default function ModalCustomer({ closeModal, titleModal, resetTitleModal, customer }) {
+
   const { user } = useAuth();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    if (titleModal === 'Editar') {
+      setName(customer.name);
+      setPhone(customer.phone);
+    } else {
+      return;
+    }
+  }, [customer]);
 
   async function handleSave() {
     // Verifica se os campos estão preenchidos
@@ -23,16 +33,23 @@ export default function ModalCustomer({ closeModal, titleModal }) {
     }
     //removendo caracteres especiais do telefone
     const phoneReplace = phone.replace(/\D/g, '');
-    // faz o registro do cliente no banco de dados
-    const { data, error } = await supabase
-      .from('customers')
-      .insert([
-        {
-          name: name,
-          phone: phoneReplace,
-          user_id: user.id,
-        },
-      ]);
+
+    //passando os dados para o payload
+    const payload = {
+      name: name,
+      phone: phoneReplace,
+    }
+
+    //quando se passa o titleModal 'Editar' ele faz um update, caso contrario faz um insert
+    const query = titleModal === 'Editar'
+      ? supabase.from('customers')
+        .update(payload)
+        .eq('id', customer.id)
+      : supabase.from('customers')
+        .insert([{ ...payload, user_id: user.id }]);
+
+    //caso de algum erro no insert ou update
+    const { error } = await query;
 
     if (error) {
       Alert.alert('Erro', 'Erro ao salvar cliente!');
@@ -47,7 +64,10 @@ export default function ModalCustomer({ closeModal, titleModal }) {
       <View style={styles.container}>
         <View style={styles.boxTitle}>
           <Text style={styles.title}>{titleModal}</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={() => { closeModal() }}>
+          <TouchableOpacity style={styles.closeButton} onPress={() => {
+            closeModal()
+            resetTitleModal()
+          }}>
             <Ionicons name="close" size={24} color="black" />
           </TouchableOpacity>
         </View>
@@ -70,7 +90,16 @@ export default function ModalCustomer({ closeModal, titleModal }) {
             maxLength={16} // Limita o número de caracteres para o formato (XX) XXXXX-XXXX
           />
         </View>
-        <View style={{ alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ alignContent: 'center', justifyContent: 'center', flexDirection: 'row', gap: 10 }}>
+          {/* Botão de excluir cliente */
+            titleModal === 'Editar' ? (
+              <Button
+                btnStyle={styles.btnDelete}
+                title={'Excluir'}
+                onPress={() => ''}
+              />
+            ) : ''
+          }
           <Button
             btnStyle={styles.btn}
             title={'Salvar'}
@@ -118,6 +147,11 @@ const styles = StyleSheet.create({
   btn: {
     marginTop: 10,
     backgroundColor: colors.primary,
+    width: '100%',
+  },
+  btnDelete: {
+    marginTop: 10,
+    backgroundColor: colors.danger,
     width: '100%',
   }
 });

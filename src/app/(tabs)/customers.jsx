@@ -15,25 +15,27 @@ export default function Customers() {
   const [openModal, setOpenModal] = useState(false);
   const [titleModal, setTitleModal] = useState('Cadastro');
   const [customers, setCustomers] = useState([]);
+  const [selectCustomer, setSelectCustomer] = useState({});
 
-  useEffect(() => {
-    async function Customers () {
-      try {
-        const { data, error } = await supabase
-          .from('customers')
-          .select('*')
-          .eq('user_id', user.id);
-   
-        if (data.length > 0) {
-         setCustomers(data);
-        }
-      } catch (error) {
-        Alert.alert("Erro ao carregar os dados");
+  async function FetchCustomers () {
+    try {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('user_id', user.id);
+ 
+      if (data.length > 0) {
+       setCustomers(data);
       }
+    } catch (error) {
+      Alert.alert("Erro ao carregar os dados");
     }
-
-    Customers();
+  }
+  //chamando a função de fetch quando o componente é montado
+  useEffect(() => {
+    FetchCustomers();
   }, [])
+
   return (
     <View style={styles.container}>
       <Header />
@@ -51,6 +53,11 @@ export default function Customers() {
             <ItemCustomer
               customer={item}
               openModal={() => setOpenModal(true)}
+              editCustomer={()=>{
+                setTitleModal('Editar');
+                setOpenModal(true);
+                setSelectCustomer(item);               
+              }}
             />
           )}
           showsVerticalScrollIndicator={false}
@@ -73,7 +80,12 @@ export default function Customers() {
         >
           <ModalCustomer
             titleModal={titleModal}
-            closeModal={() => setOpenModal(false)}
+            closeModal={() => {
+              setOpenModal(false)
+              FetchCustomers()// atualiza a lista de clientes sempre que o modal for fechado
+            }}
+            resetTitleModal={() => setTitleModal('Cadastro')}
+            customer={selectCustomer}
           />
         </Modal>
       </View>

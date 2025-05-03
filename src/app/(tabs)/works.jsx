@@ -101,7 +101,6 @@ export default function Works() {
             closeModal={() => setOpenModal(false)}
             resetState={resetState}
             refreshList={fetchWorks}
-
           />
         </Modal>
       </View>
