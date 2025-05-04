@@ -10,7 +10,13 @@ import Button from '../../components/button';
 import colors from '../../constants/theme';
 import { phoneMask } from '../../utils/masks/phone';
 
-export default function ModalCustomer({ closeModal, titleModal, resetTitleModal, customer }) {
+export default function ModalCustomer({
+  closeModal,
+  titleModal,
+  resetTitleModal,
+  customer,
+  refreshList
+}) {
 
   const { user } = useAuth();
   const [name, setName] = useState('');
@@ -59,6 +65,36 @@ export default function ModalCustomer({ closeModal, titleModal, resetTitleModal,
     }
   };
 
+  //função para deletar um cliente
+  async function handleDelete(customer) {
+    Alert.alert(
+      "Confirmação",
+      "Tem certeza que deseja excluir este serviço?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          onPress: async () => {
+            const { error } = await supabase
+              .from("customers")
+              .delete()
+              .match({ id: customer });
+
+            if (error) {
+              return Alert.alert("Erro ao excluir.", error.message);
+            }
+
+            Alert.alert("Sucesso", "Cliente excluído com sucesso!");
+            refreshList();
+            closeModal();
+            resetTitleModal()
+          },
+        },
+      ]
+    );
+  }
+
+
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
@@ -96,7 +132,7 @@ export default function ModalCustomer({ closeModal, titleModal, resetTitleModal,
               <Button
                 btnStyle={styles.btnDelete}
                 title={'Excluir'}
-                onPress={() => ''}
+                onPress={() => handleDelete(customer.id)}
               />
             ) : ''
           }

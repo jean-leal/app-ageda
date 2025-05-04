@@ -17,15 +17,15 @@ export default function Customers() {
   const [customers, setCustomers] = useState([]);
   const [selectCustomer, setSelectCustomer] = useState({});
 
-  async function FetchCustomers () {
+  async function FetchCustomers() {
     try {
       const { data, error } = await supabase
         .from('customers')
         .select('*')
         .eq('user_id', user.id);
- 
+
       if (data.length > 0) {
-       setCustomers(data);
+        setCustomers(data);
       }
     } catch (error) {
       Alert.alert("Erro ao carregar os dados");
@@ -53,10 +53,10 @@ export default function Customers() {
             <ItemCustomer
               customer={item}
               openModal={() => setOpenModal(true)}
-              editCustomer={()=>{
+              editCustomer={() => {
                 setTitleModal('Editar');
                 setOpenModal(true);
-                setSelectCustomer(item);               
+                setSelectCustomer(item);
               }}
             />
           )}
@@ -67,12 +67,12 @@ export default function Customers() {
             </View>
           )}
           ListHeaderComponent={() => (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 16}}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 16 }}>
               <Text style={styles.title}>Clientes</Text>
             </View>
           )}
         />
-        
+
         <Modal
           transparent
           visible={openModal}
@@ -86,6 +86,7 @@ export default function Customers() {
             }}
             resetTitleModal={() => setTitleModal('Cadastro')}
             customer={selectCustomer}
+            refreshList={() => FetchCustomers} // Passando a função de refresh para o modal
           />
         </Modal>
       </View>
