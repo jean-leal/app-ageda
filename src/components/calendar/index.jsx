@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Dimensions} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 
 import { Calendar, LocaleConfig } from "react-native-calendars";
 
@@ -13,9 +13,14 @@ LocaleConfig.defaultLocale = "pt-br";
 // Pegando a largura da tela para o calendário ocupar 100% da tela
 const screenWidth = Dimensions?.get('window').width;
 
-export default function CalendarComponent() {
-  const [day, setDay] = useState();
+export default function CalendarComponent({selectedDay}) {
+  // Definindo o dia atual como padrão
+  const [day, setDay] = useState({"dateString": new Date().toISOString().replace(/T.*/, "")});
+  
+  useEffect(( )=>{
 
+    selectedDay(day.dateString)
+  },[day])
   return (
     <View style={styles.container}>
       <Calendar
