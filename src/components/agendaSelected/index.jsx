@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../../constants/theme.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { supabase } from '../../lib/supabase.js';
-import { use } from 'react';
+import Button from '../button/index.jsx';
 
 export default function AgendaSelected({ day }) {
   const { user } = useAuth();
@@ -21,6 +21,10 @@ export default function AgendaSelected({ day }) {
             works (
             name,
             price
+            ), 
+            customers (
+            name,
+            phone
             )
             `)
           .eq('user_id', user.id)
@@ -52,23 +56,49 @@ export default function AgendaSelected({ day }) {
       >
         <Ionicons style={styles.icon} name={"add"} size={40} color={colors.white} />
       </TouchableOpacity>
-    
+
       {events.length === 0 ? (
         <Text style={styles.title}>Nenhum agendamento encontrado...</Text>
       ) : (
+        <View style={styles.containerItem}>
+          <FlatList
+            data={events}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.item}>
+                <View style={styles.itemDivTime}>
+                  <Text style={styles.time}>{item.time}</Text>
+                </View>
+                <View style={styles.itemDivObs}>
+                  <Text style={styles.title}>{item.customers.name}</Text>
+                  <Text style={styles.text}>{'Serviço:  ' + item.works.name}</Text>
+                  <Text style={styles.text}>{'Preço:  ' + item.works.price}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
+                    <Button
+                      title="Excluir"
+                      onPress={() => console.log("excluir agendamento")}
+                      btnStyle={{ height: 40, width: '40%', backgroundColor: colors.danger, marginTop: 10 }}
+                    />
+                    <TouchableOpacity
+                      style={{ height: 40, marginTop:10, alignContent: 'center', justifyContent: 'center' }}
+                      onPress={() => console.log("Abrir WhatsApp")}
+                    >
+                      <Ionicons
+                        name="logo-whatsapp"
+                        size={36}
+                        color={colors.success}
 
-   
-      events.map((event) => (
-        <View key={event.id} >
-          <Text style={styles.title}>{'Data:  ' + event.date}</Text>
-          <Text style={styles.title}>{'Horário:  '+ event.time}</Text>
-          <Text style={styles.title}>{'Serviço:  '+ event.works.name}</Text>
-          <Text style={styles.title}>{'Preço:  '+ event.works.price}</Text>
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            )}
+          />
         </View>
-      ))
-    )}
+      )}
     </View>
-    
+
   );
 }
 
@@ -79,14 +109,43 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
   },
+  time: {
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center'
+    color: colors.black
   },
   text: {
-    marginLeft: 10,
-    color: colors.white
+    color: colors.black
+  },
+  containerItem: {
+    flex: 1,
+    width: '100%',
+    marginTop: 16,
+  },
+  item: {
+    marginTop: 8,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    borderRadius: 10,
+    marginHorizontal: 16,
+    flexDirection: 'row',
+    minHeight: 80,
+    padding: 8
+  },
+  itemDivTime: {
+    borderRightWidth: 1,
+    borderColor: colors.primary,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  itemDivObs: {
+    paddingLeft: 10,
+    flex: 2,
   },
   fab: {
     position: 'absolute',
