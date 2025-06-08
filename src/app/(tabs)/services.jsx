@@ -14,7 +14,6 @@ import Header from '../../components/headerProfile/header';
 import colors from '../../constants/theme';
 import Button from '../../components/button';
 import Input from '../../components/input';
-import TimeInput from '../../components/timeInput';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { maskTime } from '../../utils/masks/time';
@@ -144,7 +143,7 @@ export default function Services() {
               )}
             </View>
           )}
-          ListFooterComponent={<View style={{ height: 80 }} ><Button btnStyle={{ width: '50%' }} title={'Salvar'} onPress={HandleUpdate} /></View>}
+          ListFooterComponent={<View style={{ height: 80 }} ><Button btnStyle={{ width: '100%',height: 80, marginTop: 16, backgroundColor: colors.success }} title={'Salvar'} onPress={HandleUpdate} /></View>}
         />
       </View >
     </KeyboardAvoidingView >
@@ -157,8 +156,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white
   },
   body: {
-    marginBottom: 160, 
-    margin: 16
+    flex: 1,
+    marginHorizontal: 16
   },
   title: {
     width: 'auto',

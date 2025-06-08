@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import colors from '../../constants/theme.js';
@@ -10,6 +10,34 @@ import Button from '../button/index.jsx';
 export default function AgendaSelected({ day }) {
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
+
+   //função para deletar um agendamento
+    async function handleDelete(eventId) {
+      Alert.alert(
+        "Confirmação",
+        "Tem certeza que deseja excluir este agendamento?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Excluir",
+            onPress: async () => {
+              const { error } = await supabase
+                .from("appointments")
+                .delete()
+                .match({ id: eventId });
+  
+              if (error) {
+                return Alert.alert("Erro ao excluir.", error.message);
+              }
+  
+              Alert.alert("Sucesso", "Agendamento excluído com sucesso!");
+              refreshList();
+              closeModal();
+            },
+          },
+        ]
+      );
+    }
 
   useEffect(() => {
     async function fetchAgenda() {
@@ -36,7 +64,6 @@ export default function AgendaSelected({ day }) {
         } else {
           //caso não tenha eventos para o dia selecionado ele reseta o estado
           setEvents([]);
-          console.log("Nenhum evento encontrado para este dia.");
         }
       } catch (error) {
         console.error("Erro ao buscar eventos:", error);
@@ -58,7 +85,9 @@ export default function AgendaSelected({ day }) {
       </TouchableOpacity>
 
       {events.length === 0 ? (
-        <Text style={styles.title}>Nenhum agendamento encontrado...</Text>
+        <View style={{ flex: 1, marginTop: 24, alignItems: 'center' }}>
+          <Text style={styles.title}>Nenhum agendamento encontrado...</Text>
+        </View>
       ) : (
         <View style={styles.containerItem}>
           <FlatList
@@ -76,11 +105,11 @@ export default function AgendaSelected({ day }) {
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
                     <Button
                       title="Excluir"
-                      onPress={() => console.log("excluir agendamento")}
+                      onPress={() => handleDelete(item.id)}
                       btnStyle={{ height: 40, width: '40%', backgroundColor: colors.danger, marginTop: 10 }}
                     />
                     <TouchableOpacity
-                      style={{ height: 40, marginTop:10, alignContent: 'center', justifyContent: 'center' }}
+                      style={{ height: 40, marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
                       onPress={() => console.log("Abrir WhatsApp")}
                     >
                       <Ionicons
