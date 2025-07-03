@@ -1,43 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import colors from '../../constants/theme.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { supabase } from '../../lib/supabase.js';
 import Button from '../button/index.jsx';
+import ModalAddAgenda from '../../app/(modals)/modalAddAgenda.jsx';
 
 export default function AgendaSelected({ day }) {
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
-   //função para deletar um agendamento
-    async function handleDelete(eventId) {
-      Alert.alert(
-        "Confirmação",
-        "Tem certeza que deseja excluir este agendamento?",
-        [
-          { text: "Cancelar", style: "cancel" },
-          {
-            text: "Excluir",
-            onPress: async () => {
-              const { error } = await supabase
-                .from("appointments")
-                .delete()
-                .match({ id: eventId });
-  
-              if (error) {
-                return Alert.alert("Erro ao excluir.", error.message);
-              }
-  
-              Alert.alert("Sucesso", "Agendamento excluído com sucesso!");
-              refreshList();
-              closeModal();
-            },
+  //função para deletar um agendamento
+  async function handleDelete(eventId) {
+    Alert.alert(
+      "Confirmação",
+      "Tem certeza que deseja excluir este agendamento?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          onPress: async () => {
+            const { error } = await supabase
+              .from("appointments")
+              .delete()
+              .match({ id: eventId });
+
+            if (error) {
+              return Alert.alert("Erro ao excluir.", error.message);
+            }
+
+            Alert.alert("Sucesso", "Agendamento excluído com sucesso!");
+            refreshList();
+            closeModal();
           },
-        ]
-      );
-    }
+        },
+      ]
+    );
+  }
 
   useEffect(() => {
     async function fetchAgenda() {
@@ -60,7 +62,6 @@ export default function AgendaSelected({ day }) {
 
         if (data?.length > 0) {
           setEvents(data);
-
         } else {
           //caso não tenha eventos para o dia selecionado ele reseta o estado
           setEvents([]);
@@ -75,10 +76,9 @@ export default function AgendaSelected({ day }) {
     }
   }, [day]);
   return (
-
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => console.log("Adicionar evento")}
+        onPress={() => setOpenModal(true)}
         style={styles.fab}
       >
         <Ionicons style={styles.icon} name={"add"} size={40} color={colors.white} />
@@ -126,6 +126,12 @@ export default function AgendaSelected({ day }) {
           />
         </View>
       )}
+      <Modal visible={openModal} animationType="slide" transparent>
+        <ModalAddAgenda 
+          closeModal={() => setOpenModal(false)} 
+          selectedDate={day}
+        />
+      </Modal>
     </View>
 
   );
