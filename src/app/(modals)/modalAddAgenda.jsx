@@ -6,13 +6,21 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import colors from '../../constants/theme';
 
+import { timeToMinutes } from '../../utils/functions/time';
+
 
 export default function ModalAddAgenda({
   closeModal,
   selectedDate,
 }) {
+  const weekDays = [
+  'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'
+];
   const { user } = useAuth();
   const [works, setWorks] = useState([]);
+  const [selectedWork, setSelectedWork] = useState(null);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [selectedTime, setSelectedTime] = useState(null);
 
   useEffect(() => {
     const fetchWorks = async () => {
@@ -38,6 +46,40 @@ export default function ModalAddAgenda({
     }
     fetchWorks();
   }, []);
+  // função para buscar os horários disponíveis
+  async function fetchTime() {
+    try{
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('user_id', user.id)
+
+      if (error) {
+        throw error;
+      }
+      // pega o dia que esta sendo passado e transforma em dia da semana
+      const dayIndex = weekDays[new Date(selectedDate).getDay()];
+      
+      // passando o dia da semana para a consulta
+      const dayWork = data[0]?.days_week
+
+      // verifica se o dia existe no array de dias da semana
+      const resultDate = dayWork.find(day => day.display === dayIndex);
+
+      // verifica se o dia está ativo para agendamento
+      if (resultDate.ativo === false) {
+        return console.log('Dia não disponível para agendamento');
+      }
+
+      // convertendo horario inicial e final em um array de horários
+      const timeSlots = await timeToMinutes(resultDate?.abertura, resultDate?.fechamento)
+
+      setTimeSlots(timeSlots);       
+
+    } catch (error) {
+      console.error('Erro ao buscar horários:', error.message);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -52,14 +94,43 @@ export default function ModalAddAgenda({
       <View>
         <Text>Dia Selecionado</Text>
         <Text>{selectedDate}</Text>
-        <Text>Selecione o serviço.</Text>
-        <FlatList
-          horizontal
-          data={works}
-          renderItem={({ item }) => (          
-            <Text>{item.name}</Text>
-          )}
-        />
+        <Text>Selecione o serviço:</Text>
+        <View style={{ marginVertical: 10 }}>
+          <FlatList
+            horizontal
+            data={works}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={item.id === selectedWork ? styles.itemWorkSelected : styles.itemWork}
+                onPress={() => {
+                  setSelectedWork(item.id)
+                  fetchTime();
+                }}
+              >
+                <Text style={item.id === selectedWork ? styles.textWorkSelected : styles.textWork}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+        <Text>Escolha o Horário:</Text>
+        <View style={{ marginVertical: 10 }}>
+          <FlatList
+            horizontal
+            data={timeSlots}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={ item === selectedTime ? styles.itemWorkSelected : styles.itemWork}
+                onPress={() => {
+                  setSelectedTime(item);
+                }}
+              >
+                <Text style={item === selectedTime ? styles.textWorkSelected : styles.textWork}>{item }</Text>
+              </TouchableOpacity>
+            )}
+          />
+          </View>
       </View>
     </View>
   );
@@ -89,6 +160,26 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 6
   },
-
-
+  itemWorkSelected: {
+    backgroundColor: colors.primary,
+    padding: 16,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  itemWork: {
+    borderWidth: 2,
+    borderColor: colors.gray,
+    backgroundColor: colors.grayLight,
+    padding: 16,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  textWorkSelected: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  textWork: {
+    color: colors.gray,
+    fontWeight: 'bold',
+  },
 });
