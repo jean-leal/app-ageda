@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, FlatList } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text, FlatList, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { supabase } from '../../lib/supabase';
@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import colors from '../../constants/theme';
 
 import { timeToMinutes } from '../../utils/functions/time';
+import ModalSelectCustomer from './modalSelectCustomer';
 
 
 export default function ModalAddAgenda({
@@ -14,13 +15,15 @@ export default function ModalAddAgenda({
   selectedDate,
 }) {
   const weekDays = [
-  'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'
-];
+    'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'
+  ];
   const { user } = useAuth();
   const [works, setWorks] = useState([]);
   const [selectedWork, setSelectedWork] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
     const fetchWorks = async () => {
@@ -48,7 +51,7 @@ export default function ModalAddAgenda({
   }, []);
   // função para buscar os horários disponíveis
   async function fetchTime() {
-    try{
+    try {
       const { data, error } = await supabase
         .from('services')
         .select('*')
@@ -59,7 +62,7 @@ export default function ModalAddAgenda({
       }
       // pega o dia que esta sendo passado e transforma em dia da semana
       const dayIndex = weekDays[new Date(selectedDate).getDay()];
-      
+
       // passando o dia da semana para a consulta
       const dayWork = data[0]?.days_week
 
@@ -74,7 +77,7 @@ export default function ModalAddAgenda({
       // convertendo horario inicial e final em um array de horários
       const timeSlots = await timeToMinutes(resultDate?.abertura, resultDate?.fechamento)
 
-      setTimeSlots(timeSlots);       
+      setTimeSlots(timeSlots);
 
     } catch (error) {
       console.error('Erro ao buscar horários:', error.message);
@@ -94,6 +97,38 @@ export default function ModalAddAgenda({
       <View>
         <Text>Dia Selecionado</Text>
         <Text>{selectedDate}</Text>
+        <View>
+          <Text>Selecione o Cliente: </Text>
+          <Text></Text>
+          {!customer ?
+            <TouchableOpacity>
+              <Text onPress={() => setOpenModal(true)}>
+                Abrir Modal
+              </Text>
+            </TouchableOpacity>
+            :
+            <View>
+              <Text>{customer.name}</Text>
+              <TouchableOpacity>
+                <Text onPress={() => setOpenModal(true)}>
+                  Trocar Cliente
+                </Text>
+              </TouchableOpacity>
+            </View>
+          }
+          <Modal
+            transparent
+            visible={openModal}
+            animationType="fade"
+          >
+            <ModalSelectCustomer
+              closeModal={() => {
+                setOpenModal(false)
+              }}
+              customerSelected={(customer) => { setCustomer(customer) }}
+            />
+          </Modal>
+        </View>
         <Text>Selecione o serviço:</Text>
         <View style={{ marginVertical: 10 }}>
           <FlatList
@@ -121,16 +156,16 @@ export default function ModalAddAgenda({
             data={timeSlots}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={ item === selectedTime ? styles.itemWorkSelected : styles.itemWork}
+                style={item === selectedTime ? styles.itemWorkSelected : styles.itemWork}
                 onPress={() => {
                   setSelectedTime(item);
                 }}
               >
-                <Text style={item === selectedTime ? styles.textWorkSelected : styles.textWork}>{item }</Text>
+                <Text style={item === selectedTime ? styles.textWorkSelected : styles.textWork}>{item}</Text>
               </TouchableOpacity>
             )}
           />
-          </View>
+        </View>
       </View>
     </View>
   );
