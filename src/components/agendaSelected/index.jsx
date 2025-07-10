@@ -11,6 +11,7 @@ export default function AgendaSelected({ day }) {
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [working, setWorking] = useState([]);
 
   //função para deletar um agendamento
   async function handleDelete(eventId) {
@@ -56,6 +57,14 @@ export default function AgendaSelected({ day }) {
             `)
         .eq('user_id', user.id)
         .eq('date', day);
+      //fazendo a ordenação dos eventos por horário
+        if (data) {
+        const ordenadoPorHorario = data.sort((a, b) => {
+          const [hA, mA] = a.time.split(':').map(Number);
+          const [hB, mB] = b.time.split(':').map(Number);
+          return (hA * 60 + mA) - (hB * 60 + mB);
+        });
+      }
 
       if (data?.length > 0) {
         setEvents(data);
@@ -68,15 +77,47 @@ export default function AgendaSelected({ day }) {
     }
   }
 
+  function SearchDayAgenda() {
+    // adiciona a hora atual para evitar problemas de fuso horário
+    const date = `${day}T${new Date().toTimeString().split(' ')[0]}`;
+    const dayIndex = new Date(date).getDay();
+
+    // verifica se o dia está ativo para agendamento
+    const isDayActive = working[dayIndex]?.ativo
+    // se não estiver ele retorna um alerta
+    if (!isDayActive) {
+      return Alert.alert("Dia não disponível para agendamento, ative o dia na aba serviços.");
+    }
+    else {
+      //caso esteja ativo ele abre o modal
+      setOpenModal(true);
+    }
+  }
+
   useEffect(() => {
     if (day) {
       fetchAgenda();
     }
+    async function DaysWeek() {
+      try {
+        const { data, error } = await supabase
+          .from('services')
+          .select('*')
+          .eq('user_id', user.id);
+
+        if (data.length > 0) {
+          setWorking(data[0]?.days_week);
+        }
+      } catch (error) {
+        Alert.alert("Erro ao carregar os dados");
+      }
+    }
+    DaysWeek();
   }, [day]);
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => setOpenModal(true)}
+        onPress={SearchDayAgenda}
         style={styles.fab}
       >
         <Ionicons style={styles.icon} name={"add"} size={40} color={colors.white} />
@@ -101,28 +142,28 @@ export default function AgendaSelected({ day }) {
                   <Text style={styles.text}>{'Serviço:  ' + item.works.name}</Text>
                   <Text style={styles.text}>{'Preço:  ' + item.works.price}</Text>
                 </View>
-                  <View style={{ alignContent: 'center', justifyContent: 'center' }}>
-                    <TouchableOpacity
-                      style={{  marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
-                      onPress={() => handleDelete(item.id)}
-                    >
-                      <Ionicons
-                        name="trash"
-                        size={26}
-                        color={colors.danger}
-                      />
-                    </TouchableOpacity>                    
-                    <TouchableOpacity
-                      style={{  marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
-                      onPress={() => console.log("Abrir WhatsApp")}
-                    >
-                      <Ionicons
-                        name="logo-whatsapp"
-                        size={26}
-                        color={colors.success}
-                      />
-                    </TouchableOpacity>
-                  </View>
+                <View style={{ alignContent: 'center', justifyContent: 'center' }}>
+                  <TouchableOpacity
+                    style={{ alignContent: 'center', justifyContent: 'center' }}
+                    onPress={() => handleDelete(item.id)}
+                  >
+                    <Ionicons
+                      name="trash"
+                      size={24}
+                      color={colors.danger}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
+                    onPress={() => console.log("Abrir WhatsApp")}
+                  >
+                    <Ionicons
+                      name="logo-whatsapp"
+                      size={24}
+                      color={colors.success}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -134,6 +175,7 @@ export default function AgendaSelected({ day }) {
         transparent={true}
       >
         <ModalAddAgenda
+          appointments={events}
           closeModal={() => setOpenModal(false)}
           selectedDate={day}
           refreshList={() => {

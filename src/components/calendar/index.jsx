@@ -16,7 +16,7 @@ const screenWidth = Dimensions?.get('window').width;
 export default function CalendarComponent({selectedDay}) {
   // Definindo o dia atual como padrão
   const [day, setDay] = useState({"dateString": new Date().toLocaleDateString('en-CA')});
-console.log('Dia selecionado:', day.dateString);
+
   useEffect(( )=>{
     selectedDay(day.dateString)
   },[day])

@@ -14,7 +14,8 @@ import ModalSelectCustomer from './modalSelectCustomer';
 export default function ModalAddAgenda({
   closeModal,
   selectedDate,
-  refreshList
+  refreshList, 
+  appointments
 }) {
   const weekDays = [
     'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'
@@ -91,8 +92,16 @@ export default function ModalAddAgenda({
 
       // convertendo horario inicial e final em um array de horários
       const timeSlots = await timeToMinutes(resultDate?.abertura, resultDate?.fechamento)
+      //console.log('Horários disponíveis:', timeSlots);
 
-      setTimeSlots(timeSlots);
+      // filtra os horários que já estão ocupados
+      const schedules = appointments.map(item => item.time);
+
+      //filtra os horários disponíveis
+      const availableSlots = timeSlots.filter(slot => !schedules.includes(slot));
+
+      //passa os horários disponíveis para o estado
+      setTimeSlots(availableSlots);
 
     } catch (error) {
       console.error('Erro ao buscar horários:', error.message);
