@@ -5,7 +5,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../../constants/theme.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { supabase } from '../../lib/supabase.js';
-import Button from '../button/index.jsx';
 import ModalAddAgenda from '../../app/(modals)/modalAddAgenda.jsx';
 
 export default function AgendaSelected({ day }) {
@@ -33,20 +32,18 @@ export default function AgendaSelected({ day }) {
             }
 
             Alert.alert("Sucesso", "Agendamento excluído com sucesso!");
-            refreshList();
+            fetchAgenda();
             closeModal();
           },
         },
       ]
     );
   }
-
-  useEffect(() => {
-    async function fetchAgenda() {
-      try {
-        const { data, error } = await supabase
-          .from('appointments')
-          .select(`
+  async function fetchAgenda() {
+    try {
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(`
             *,
             works (
             name,
@@ -57,20 +54,21 @@ export default function AgendaSelected({ day }) {
             phone
             )
             `)
-          .eq('user_id', user.id)
-          .eq('date', day);
+        .eq('user_id', user.id)
+        .eq('date', day);
 
-        if (data?.length > 0) {
-          setEvents(data);
-        } else {
-          //caso não tenha eventos para o dia selecionado ele reseta o estado
-          setEvents([]);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar eventos:", error);
+      if (data?.length > 0) {
+        setEvents(data);
+      } else {
+        //caso não tenha eventos para o dia selecionado ele reseta o estado
+        setEvents([]);
       }
+    } catch (error) {
+      console.error("Erro ao buscar eventos:", error);
     }
+  }
 
+  useEffect(() => {
     if (day) {
       fetchAgenda();
     }
@@ -102,34 +100,46 @@ export default function AgendaSelected({ day }) {
                   <Text style={styles.title}>{item.customers.name}</Text>
                   <Text style={styles.text}>{'Serviço:  ' + item.works.name}</Text>
                   <Text style={styles.text}>{'Preço:  ' + item.works.price}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                    <Button
-                      title="Excluir"
-                      onPress={() => handleDelete(item.id)}
-                      btnStyle={{ height: 40, width: '40%', backgroundColor: colors.danger, marginTop: 10 }}
-                    />
+                </View>
+                  <View style={{ alignContent: 'center', justifyContent: 'center' }}>
                     <TouchableOpacity
-                      style={{ height: 40, marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
+                      style={{  marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
+                      onPress={() => handleDelete(item.id)}
+                    >
+                      <Ionicons
+                        name="trash"
+                        size={26}
+                        color={colors.danger}
+                      />
+                    </TouchableOpacity>                    
+                    <TouchableOpacity
+                      style={{  marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
                       onPress={() => console.log("Abrir WhatsApp")}
                     >
                       <Ionicons
                         name="logo-whatsapp"
-                        size={36}
+                        size={26}
                         color={colors.success}
-
                       />
                     </TouchableOpacity>
                   </View>
-                </View>
               </View>
             )}
           />
         </View>
       )}
-      <Modal visible={openModal} animationType="slide" transparent>
-        <ModalAddAgenda 
-          closeModal={() => setOpenModal(false)} 
+      <Modal
+        visible={openModal}
+        animationType="fade"
+        transparent={true}
+      >
+        <ModalAddAgenda
+          closeModal={() => setOpenModal(false)}
           selectedDate={day}
+          refreshList={() => {
+            // Recarrega a lista de eventos após adicionar um novo agendamento
+            fetchAgenda();
+          }}
         />
       </Modal>
     </View>
@@ -149,7 +159,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: colors.black
   },
