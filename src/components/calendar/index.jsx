@@ -20,6 +20,7 @@ export default function CalendarComponent({selectedDay}) {
   useEffect(( )=>{
     selectedDay(day.dateString)
   },[day])
+  
   return (
     <View style={styles.container}>
       <Calendar

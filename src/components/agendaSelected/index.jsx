@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import colors from '../../constants/theme.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { supabase } from '../../lib/supabase.js';
+import { fetchAppointments } from '../../utils/functions/fetchBD.js';
 import ModalAddAgenda from '../../app/(modals)/modalAddAgenda.jsx';
 
 export default function AgendaSelected({ day }) {
@@ -40,46 +41,19 @@ export default function AgendaSelected({ day }) {
       ]
     );
   }
-  async function fetchAgenda() {
-    try {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select(`
-            *,
-            works (
-            name,
-            price
-            ), 
-            customers (
-            name,
-            phone
-            )
-            `)
-        .eq('user_id', user.id)
-        .eq('date', day);
-      //fazendo a ordenação dos eventos por horário
-        if (data) {
-        const ordenadoPorHorario = data.sort((a, b) => {
-          const [hA, mA] = a.time.split(':').map(Number);
-          const [hB, mB] = b.time.split(':').map(Number);
-          return (hA * 60 + mA) - (hB * 60 + mB);
-        });
-      }
 
-      if (data?.length > 0) {
-        setEvents(data);
-      } else {
-        //caso não tenha eventos para o dia selecionado ele reseta o estado
-        setEvents([]);
-      }
-    } catch (error) {
-      console.error("Erro ao buscar eventos:", error);
+  async function fetchAgenda() {
+    const data = await fetchAppointments(user.id, day);
+    if (data.length > 0) {
+      setEvents(data);
     }
+    // Se não houver eventos, reseta o estado, passando um array vazio que esta sendo retornado pela função fetchAppointments
+    setEvents(data);
   }
 
   function SearchDayAgenda() {
     // adiciona a hora atual para evitar problemas de fuso horário
-    const date = `${day}T${new Date().toTimeString().split(' ')[0]}`;
+    const date = new Date(day).toLocaleDateString('pt-BR').split('/').reverse().join('-'); // Formata a data para YYYY-MM-DD
     const dayIndex = new Date(date).getDay();
 
     // verifica se o dia está ativo para agendamento

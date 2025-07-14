@@ -72,19 +72,26 @@ export default function Works() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.itemContainer}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 }}>
-                  <Text style={styles.titleItem}>{item.name}</Text>
+                <View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 }}>
+                    <Text style={styles.titleItem}>{item.name}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row'}}>
+                    <View style={styles.itemTime}>
+                      <Ionicons style={styles.icon} name={"time-outline"} size={26} color={colors.white} />
+                      <Text style={styles.text}>{minutesToTime(item.duration)}</Text>
+                    </View>
+                    <View style={styles.itemTime}>
+                      <Ionicons style={styles.icon} name={"cash-outline"} size={26} color={colors.white} />
+                      <Text style={styles.text}>{item.price}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={{ padding: 12 }}>
                   <TouchableOpacity onPress={() => EdtiWork(item)} style={{ backgroundColor: colors.white, borderRadius: 100, padding: 8, width: 40, height: 40, alignItems: 'center' }}>
-                    <FontAwesome style={styles.icon} name={"pencil"} size={22} color={colors.primary} />
+                    <FontAwesome style={styles.icon} name={"pencil"} size={20} color={colors.primary} />
                   </TouchableOpacity>
-                </View>
-                <View style={styles.itemTime}>
-                  <Ionicons style={styles.icon} name={"time-outline"} size={28} color={colors.white} />
-                  <Text style={styles.text}>{minutesToTime(item.duration)}</Text>
-                </View>
-                <View style={styles.itemTime}>
-                  <Ionicons style={styles.icon} name={"cash-outline"} size={28} color={colors.white} />
-                  <Text style={styles.text}>{item.price}</Text>
                 </View>
               </View>
             )}
@@ -121,27 +128,29 @@ const styles = StyleSheet.create({
   },
   title: {
     width: "100%",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 18,
   },
   itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: colors.primary,
     borderRadius: 10,
-    marginBottom: 12,
+    marginBottom: 10,
     paddingBottom: 10
   },
   titleItem: {
     fontWeight: 'bold',
     color: colors.white,
-    fontSize: 16
+    fontSize: 14
   },
   itemTime: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    marginBottom: 8
+    marginBottom: 6
   },
   text: {
     marginLeft: 10,

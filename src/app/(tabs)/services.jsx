@@ -105,9 +105,9 @@ export default function Services() {
           showsVerticalScrollIndicator={false}
           data={working}
           keyExtractor={item => item.id.toString()}
-          ListHeaderComponent={<Text style={styles.title}>Atendimento</Text>}
+          ListHeaderComponent={<Text style={styles.title}>Dias de atendimento</Text>}
           renderItem={({ item }) => (
-            <View style={styles.containerItem}>
+            <View style={[styles.containerItem , {backgroundColor: item.ativo ? colors.primary : colors.grayLight }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={styles.textBold}>{item.display}</Text>
                 <Switch trackColor={{ false: colors.white, true: colors.white }}
@@ -153,28 +153,28 @@ export default function Services() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
+    paddingBottom: 16
   },
   body: {
     flex: 1,
-    marginHorizontal: 16
+    marginHorizontal: 16,
   },
   title: {
     width: 'auto',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold', 
-    marginBottom: 18
+    margin: 16
   },
   containerItem: {
     marginBottom: 12,
-    backgroundColor: colors.primary,
-    padding: 16,
+    padding: 10,
     borderRadius: 10
   },
   textBold: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     color: colors.white
   },
   text: {
@@ -185,7 +185,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   inputHorario: {
-    ////idth: 100,
     backgroundColor: colors.white,
     textAlign: 'center',
     marginTop: 6,
