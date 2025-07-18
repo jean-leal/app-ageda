@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 20,
-    bottom: 20, // ajuste conforme necessário para não ficar colado na barra
+    bottom: 80, // ajuste conforme necessário para não ficar colado na barra
     backgroundColor: colors.primary,
     width: 60,
     height: 60,

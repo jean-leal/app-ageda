@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   Switch,
   FlatList,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
   Alert
 } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 
 import Header from '../../components/headerProfile/header';
 import colors from '../../constants/theme';
@@ -31,12 +30,14 @@ export default function Services() {
     { id: 6, ativo: false, display: "Sábado", abertura: "08:00", fechamento: "18:00" },
   ]);
 
+  // Atualiza o estado do dia selecionado, alternando entre ativo e inativo
   const toggleSwitch = (id) => {
     setWorking(prev => prev.map(day =>
       day.id === id ? { ...day, ativo: !day.ativo } : day
     ));
   };
 
+  // Atualiza o horário de abertura ou fechamento do dia selecionado
   const handleTimeChange = (id, value, type) => {
     setWorking(prev => {
       const newWorking = prev.map(day =>
@@ -46,22 +47,32 @@ export default function Services() {
     });
   };
 
-  useEffect(() => {
-    async function DaysWeek() {
-      try {
-        const { data, error } = await supabase
-          .from('services')
-          .select('*')
-          .eq('user_id', user.id);
+  // Função para buscar os dias de atendimento do usuário
+  async function DaysWeek() {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('user_id', user.id);
 
-        if (data.length > 0) {
-          setWorking(data[0]?.days_week);
-        }
-      } catch (error) {
-        Alert.alert("Erro ao carregar os dados");
+      if (data.length > 0) {
+        setWorking(data[0]?.days_week);
       }
+    } catch (error) {
+      Alert.alert("Erro ao carregar os dados");
     }
-    DaysWeek();
+  }
+
+  //chama a função DaysWeek quando o componente é focado
+  useFocusEffect(
+    useCallback(() => {
+      DaysWeek();
+    }, [])
+  );
+
+  // Carrega os dias de atendimento do usuário ao montar o componente
+  useEffect(() => {
+    //DaysWeek();
   }, []);
 
   async function HandleUpdate() {
@@ -97,7 +108,7 @@ export default function Services() {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : null}>
+    <View style={styles.container}>
       <Header />
       <View style={styles.body} keyboardShouldPersistTaps="handled">
         <FlatList
@@ -107,7 +118,7 @@ export default function Services() {
           keyExtractor={item => item.id.toString()}
           ListHeaderComponent={<Text style={styles.title}>Dias de atendimento</Text>}
           renderItem={({ item }) => (
-            <View style={[styles.containerItem , {backgroundColor: item.ativo ? colors.primary : colors.grayLight }]}>
+            <View style={[styles.containerItem, { backgroundColor: item.ativo ? colors.primary : colors.grayLight }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={styles.textBold}>{item.display}</Text>
                 <Switch trackColor={{ false: colors.white, true: colors.white }}
@@ -143,10 +154,10 @@ export default function Services() {
               )}
             </View>
           )}
-          ListFooterComponent={<View style={{ height: 80 }} ><Button btnStyle={{ width: '100%',height: 80, marginTop: 16, backgroundColor: colors.success }} title={'Salvar'} onPress={HandleUpdate} /></View>}
+          ListFooterComponent={<View style={{ height: 80, marginBottom: 60 }} ><Button btnStyle={{ width: '100%', height: 80, marginTop: 16, backgroundColor: colors.success }} title={'Salvar'} onPress={HandleUpdate} /></View>}
         />
       </View >
-    </KeyboardAvoidingView >
+    </View >
   );
 };
 
@@ -158,13 +169,13 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
   },
   title: {
     width: 'auto',
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
     margin: 16
   },
   containerItem: {

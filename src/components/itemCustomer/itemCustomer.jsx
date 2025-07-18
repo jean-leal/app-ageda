@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
   img: {
     borderWidth: 2,
     borderColor: colors.white,
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 50
   },
 });

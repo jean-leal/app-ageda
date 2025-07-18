@@ -3,9 +3,9 @@ const colors = {
   black: "#000000",
   white: "#FFFFFF",
   gray: "#4A4A4A",
-  success: "#12BE14",
+  success: "#00C853",
   danger: "#E33C3C",
-  green: "#1B671C",
+  green: "#4CAF50",
   red: "#BF0000",
   grayLight: "#B0B0B0",
 };

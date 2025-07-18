@@ -27,21 +27,25 @@ export default function Tab() {
   return (
     <View style={styles.container}>
       <View style={styles.containerImg}>
-        <Image 
-          source={ user?.url_image ? {uri: user?.url_image} : require('../../assets/user.png')} 
+        <Image
+          source={user?.url_image ? { uri: user?.url_image } : require('../../assets/user.png')}
           style={styles.img} />
-          <Text style={styles.title}  numberOfLines={1} ellipsizeMode="tail">{user?.name}</Text>
-        </View>
-      <ItemProfile iconName="mail" text={user?.email} />
-      <ItemProfile iconName="home" text={`${user?.address} - ${user?.number}` || 'Rua não cadastrada'} />
-      <ItemProfile iconName="location" text={`${user?.city} - ${user?.state}` || 'Cidade não cadastrada'} />
-      <ItemProfile iconName="call" text={phoneMask(user?.phone) || 'Telefone não cadastrado'} />
-      <Button title="Editar" onPress={() => setOpenModal(true)} btnStyle={{ marginTop: 50, width: '90%' }} />
-      <Button title="Sair do App" onPress={handleSignOut} btnStyle={{ backgroundColor: colors.grayLight, width: '90%', marginTop: 12 }} />
+        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{user?.name}</Text>
+      </View>
+      <View style={styles.body}>
 
-      <Modal visible={openModal} animationType="slide" backgroundColor="rgba(0,0,0,0.5)">
-        <ModalProfile closeModal={() => setOpenModal(false)} />
-      </Modal>
+
+        <ItemProfile iconName="mail" text={user?.email} />
+        <ItemProfile iconName="home" text={`${user?.address} - ${user?.number}` || 'Rua não cadastrada'} />
+        <ItemProfile iconName="location" text={`${user?.city} - ${user?.state}` || 'Cidade não cadastrada'} />
+        <ItemProfile iconName="call" text={phoneMask(user?.phone) || 'Telefone não cadastrado'} />
+        <Button title="Editar" onPress={() => setOpenModal(true)} btnStyle={{ marginTop: 50, width: '90%' }} />
+        <Button title="Sair do App" onPress={handleSignOut} btnStyle={{ backgroundColor: colors.grayLight, width: '90%', marginTop: 12 }} />
+
+        <Modal visible={openModal} animationType="slide" backgroundColor="rgba(0,0,0,0.5)">
+          <ModalProfile closeModal={() => setOpenModal(false)} />
+        </Modal>
+      </View>
     </View>
   );
 }
@@ -50,28 +54,34 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
     flex: 1,
+  },
+  body: {
+    flex: 1,
     alignItems: 'center',
-    padding: 16,
-    paddingTop: 40,
+    paddingTop: 16,
+    paddingHorizontal: 16,
   },
   img: {
-    width: 100,
-    height: 100,
+    borderWidth: 2,
+    borderColor: colors.white,
+    width: 80,
+    height: 80,
     borderRadius: 60,
   },
   containerImg: {
-    width: '100%',
-    borderBottomWidth: 1,
+    padding: 16,
     alignItems: 'center',
-    paddingBottom: 28,
     flexDirection: 'row',
-    marginBottom: 24,
-    overflow: 'hidden'
+    marginBottom: 16,
+    overflow: 'hidden',
+    backgroundColor: colors.primary,
+    borderBottomLeftRadius: 50,    
   },
   title: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
     marginLeft: 18,
-    flexShrink: 1
+    flexShrink: 1,
+    color: colors.white,
   }
 });

@@ -12,7 +12,6 @@ export default function AgendaSelected({ day }) {
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [working, setWorking] = useState([]);
 
   //função para deletar um agendamento
   async function handleDelete(eventId) {
@@ -51,16 +50,20 @@ export default function AgendaSelected({ day }) {
     setEvents(data);
   }
 
-  function SearchDayAgenda() {
+  async function SearchDayAgenda () {
+    // chama a função que busca os dias da semana ativos para atualizar o estado working
+    const daysServices = await DaysWeek()
+
     // adiciona a hora atual para evitar problemas de fuso horário
     const date = new Date(day).toLocaleDateString('pt-BR').split('/').reverse().join('-'); // Formata a data para YYYY-MM-DD
     const dayIndex = new Date(date).getDay();
 
     // verifica se o dia está ativo para agendamento
-    const isDayActive = working[dayIndex]?.ativo
+    const isDayActive = daysServices[dayIndex]?.ativo
+    
     // se não estiver ele retorna um alerta
     if (!isDayActive) {
-      return Alert.alert("Dia não disponível para agendamento, ative o dia na aba serviços.");
+      return Alert.alert("Dia não disponível para agendamento, ative o dia na aba de atendimento.");
     }
     else {
       //caso esteja ativo ele abre o modal
@@ -68,26 +71,31 @@ export default function AgendaSelected({ day }) {
     }
   }
 
+  // função para buscar os dias da semana ativos
+  async function DaysWeek() {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (data.length > 0) {
+        //setWorking(data[0]?.days_week);
+        return(data[0]?.days_week);
+      }
+    } catch (error) {
+      Alert.alert("Erro ao carregar os dados");
+    }
+  }
+
+
   useEffect(() => {
     if (day) {
       fetchAgenda();
     }
-    async function DaysWeek() {
-      try {
-        const { data, error } = await supabase
-          .from('services')
-          .select('*')
-          .eq('user_id', user.id);
 
-        if (data.length > 0) {
-          setWorking(data[0]?.days_week);
-        }
-      } catch (error) {
-        Alert.alert("Erro ao carregar os dados");
-      }
-    }
-    DaysWeek();
   }, [day]);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -211,7 +219,7 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     right: 20,
-    bottom: 20, // ajuste conforme necessário para não ficar colado na barra
+    bottom: 80, // ajuste conforme necessário para não ficar colado na barra
     backgroundColor: colors.primary,
     width: 60,
     height: 60,

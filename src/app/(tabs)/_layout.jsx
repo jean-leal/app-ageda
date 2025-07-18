@@ -6,7 +6,7 @@ import colors from '../../constants/theme';
 
 export default function TabLayout() {
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
+    <View style={{ flex: 1, backgroundColor: "transparent" }}>
       <Tabs
         screenOptions={{
           tabBarInactiveTintColor: colors.gray,
@@ -74,10 +74,13 @@ const styles = StyleSheet.create({
   tabBarStyle: {
     backgroundColor: colors.primary,
     height: 60,
-    bottom: 6,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 8,
     marginLeft: 10,
     marginRight: 10,
-    //position: 'absolute',
+    marginTop: 10,
     borderRadius: 30,
     borderTopWidth: 0, // Remove a linha superior padrão
   }

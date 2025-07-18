@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
-import Header from '../../components/headerProfile/header.jsx'
+import Header from '../../components/headerProfile/header.jsx';
 import colors from '../../constants/theme.js';
 import { useAuth } from '../../contexts/AuthContext.js';
 import { fetchAppointments } from '../../utils/functions/fetchBD.js';
@@ -13,10 +13,8 @@ export default function Home() {
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
 
-  //pega a data do brasil e retorna no formato YYYY-MM-DD
-  const date = new Date().toLocaleDateString('pt-BR').split('/').reverse().join('-'); // Formata a data para YYYY-MM-DD
+  const date = new Date().toLocaleDateString('pt-BR').split('/').reverse().join('-');
 
-  // função para verificar os agendamentos do dia, fora do useEffect para poder ser chamada quando necessário
   async function fetchAgenda() {
     try {
       const data = await fetchAppointments(user?.id, date);
@@ -33,62 +31,65 @@ export default function Home() {
   });
 
   useEffect(() => {
-    //chama a função fetchAgenda para buscar os agendamentos do usuário
     if (user?.id) {
       fetchAgenda();
     }
   }, [user?.id]);
+
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.clientName}>{item.customers.name}</Text>
+        <TouchableOpacity onPress={() => console.log('Delete', item.id)} style={styles.deleteBtn}>
+          <Ionicons name="trash" size={18} color={colors.danger} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.cardBody}>
+        <Text style={styles.time}>{item.time}</Text>
+
+        <View style={styles.details}>
+          <View style={styles.detailRow}>
+            <Ionicons name="calendar" size={18} color={colors.white} style={styles.icon} />
+            <Text style={styles.detailText}>
+              {new Date(item.date).toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Ionicons name="hammer" size={18} color={colors.white} style={styles.icon} />
+            <Text style={styles.detailText}>{item.works.name}</Text>
+          </View>
+        </View>
+      </View>
+      
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Button title="Confirmar" btnStyle={styles.confirmBtn} />
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <Text style={styles.price}>R$ {item.works.price}</Text>
+        </View>
+      </View>
+
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Header />
       <View style={styles.body}>
         <Text style={styles.title}>Agendamentos do dia</Text>
-        <View>
-          <FlatList
-            data={events}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.boxItem}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={styles.TitleItem}>{item.customers.name} - {item.works.name}</Text>
-                  <TouchableOpacity onPress={() => console.log('Delete appointment', item.id)} style={{ backgroundColor: colors.white, padding: 3, borderRadius: 50 }}>
-                    <Ionicons name="trash" size={18} color={colors.danger} />
-                  </TouchableOpacity>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginVertical: 12}} >
-                  <View style={{ width: '50%', alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                      <Text style={{fontSize: 38, color: colors.white, fontWeight: "bold"}}>{item.time}</Text>
-                    </View>
-                  </View>
-                  <View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                      <Ionicons name="calendar" size={18} color={colors.white} style={{ marginRight: 6 }} />
-                      <Text style={styles.textItem}>{new Date(item.date).toLocaleDateString('pt-BR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                      </Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                      <Ionicons name="hammer" size={18} color={colors.white} style={{ marginRight: 6 }} />
-                      <Text style={styles.textItem}>{item.works.name}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Button
-                    title="Confirmar"
-                    btnStyle={{ backgroundColor: colors.success }} />
-                </View>
-              </View>
-            )}
-            ListEmptyComponent={<Text>Nenhum agendamento para hoje.</Text>}
-          />
-        </View>
+
+        <FlatList
+          data={events}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          ListEmptyComponent={<Text style={styles.emptyText}>Nenhum agendamento para hoje.</Text>}
+          contentContainerStyle={{ paddingBottom: 80 }}
+        />
       </View>
     </View>
   );
@@ -97,32 +98,84 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.white
   },
   body: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16
+    padding: 16
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 16
   },
-  boxItem: {
+  card: {
+    backgroundColor: colors.primary,
+    borderRadius: 16,
+    padding: 16,
     marginBottom: 12,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: colors.primary
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 3
   },
-  textItem: {
-    color: colors.white,
-    fontSize: 14,
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
-  TitleItem: {
-    color: colors.white,
+  clientName: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 4
+    color: colors.white
+  },
+  deleteBtn: {
+    backgroundColor: '#fff',
+    padding: 6,
+    borderRadius: 50
+  },
+  cardBody: {
+    flexDirection: 'row',
+    marginTop: 16,
+    alignItems: 'flex-start'
+  },
+  time: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: colors.white,
+    width: 100
+  },
+  details: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    marginLeft: 16
+  },
+  icon: {
+    marginRight: 6
+  },
+  detailText: {
+    fontSize: 14,
+    color: colors.white
+  },
+  confirmBtn: {
+    backgroundColor: colors.success,
+    marginTop: 16,
+    width: '50%',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 32,
+    color: '#999'
+  },
+  price: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: colors.white,
+    marginLeft: 20
   }
 });

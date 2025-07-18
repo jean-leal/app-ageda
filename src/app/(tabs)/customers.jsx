@@ -130,17 +130,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     color: colors.white
   },
-  img: {
-    borderWidth: 2,
-    borderColor: colors.white,
-    width: 80,
-    height: 80,
-    borderRadius: 50
-  },
   fab: {
     position: 'absolute',
     right: 20,
-    bottom: 20, // ajuste conforme necessário para não ficar colado na barra
+    bottom: 80,
     backgroundColor: colors.primary,
     width: 60,
     height: 60,
