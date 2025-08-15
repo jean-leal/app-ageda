@@ -5,11 +5,7 @@ export const fetchAppointments = async (userId, date) => {
     const { data, error } = await supabase
       .from('appointments')
       .select(`
-            *,
-            works (
-            name,
-            price
-            ), 
+            *,           
             customers (
             name,
             phone
@@ -17,6 +13,7 @@ export const fetchAppointments = async (userId, date) => {
             `)
       .eq('user_id', userId)
       .eq('date', date)
+      .eq('status', 'active') 
       .order("time", { ascending: true });
     if (error) {
       throw error;

@@ -62,7 +62,7 @@ export default function Home() {
 
           <View style={styles.detailRow}>
             <Ionicons name="hammer" size={18} color={colors.white} style={styles.icon} />
-            <Text style={styles.detailText}>{item.works.name}</Text>
+            <Text style={styles.detailText}>{item.work_name}</Text>
           </View>
         </View>
       </View>
@@ -70,7 +70,7 @@ export default function Home() {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Button title="Confirmar" btnStyle={styles.confirmBtn} />
         <View style={{ flex: 1, alignItems: 'flex-end' }}>
-          <Text style={styles.price}>R$ {item.works.price}</Text>
+          <Text style={styles.price}>R$ {item.work_price}</Text>
         </View>
       </View>
 

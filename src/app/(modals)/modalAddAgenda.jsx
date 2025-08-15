@@ -124,7 +124,10 @@ export default function ModalAddAgenda({
             .insert({
               user_id: user.id,
               customer_id: customer.id,
-              work_id: selectedWork,
+              work_id: selectedWork.id,
+              work_duration: selectedWork.duration,
+              work_name: selectedWork.name,
+              work_price: selectedWork.price,
               date: selectedDate,
               time: selectedTime,
               notes: '',// adicionar campo de observações se necessário
@@ -196,13 +199,13 @@ export default function ModalAddAgenda({
               data={works}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={item.id === selectedWork ? styles.itemWorkSelected : styles.itemWork}
+                  style={item?.id === selectedWork?.id ? styles.itemWorkSelected : styles.itemWork}
                   onPress={() => {
-                    setSelectedWork(item.id)
+                    setSelectedWork(item)
                     fetchTime();
                   }}
                 >
-                  <Text style={item.id === selectedWork ? styles.textWorkSelected : styles.textWork}>
+                  <Text style={item?.id === selectedWork?.id ? styles.textWorkSelected : styles.textWork}>
                     {item.name}
                   </Text>
                 </TouchableOpacity>

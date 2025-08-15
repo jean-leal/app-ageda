@@ -54,9 +54,8 @@ export default function AgendaSelected({ day }) {
     // chama a função que busca os dias da semana ativos para atualizar o estado working
     const daysServices = await DaysWeek()
 
-    // adiciona a hora atual para evitar problemas de fuso horário
-    const date = new Date(day).toLocaleDateString('pt-BR').split('/').reverse().join('-'); // Formata a data para YYYY-MM-DD
-    const dayIndex = new Date(date).getDay();
+    // adiciona a hora do meio dia para evitar problemas de fuso horário
+    const dayIndex = new Date(`${day}T12:00:00`).getDay();
 
     // verifica se o dia está ativo para agendamento
     const isDayActive = daysServices[dayIndex]?.ativo
@@ -121,8 +120,8 @@ export default function AgendaSelected({ day }) {
                 </View>
                 <View style={styles.itemDivObs}>
                   <Text style={styles.title}>{item.customers.name}</Text>
-                  <Text style={styles.text}>{'Serviço:  ' + item.works.name}</Text>
-                  <Text style={styles.text}>{'Preço:  ' + item.works.price}</Text>
+                  <Text style={styles.text}>{'Serviço:  ' + item.work_name}</Text>
+                  <Text style={styles.text}>{'Preço:  ' + item.work_price}</Text>
                 </View>
                 <View style={{ alignContent: 'center', justifyContent: 'center' }}>
                   <TouchableOpacity
