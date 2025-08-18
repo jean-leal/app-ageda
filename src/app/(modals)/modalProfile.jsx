@@ -70,9 +70,7 @@ export default function ModalProfile({ closeModal }) {
       Alert.alert('Erro', 'Erro ao atualizar os dados');
     }
 
-  }
-
-  
+  } 
 
   //pegando a imagem e adicionado no setImage
   async function uploadImage() {

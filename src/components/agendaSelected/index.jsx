@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFocusEffect } from 'expo-router';
 
 import colors from '../../constants/theme.js';
 import { useAuth } from '../../contexts/AuthContext.js';
@@ -50,7 +51,7 @@ export default function AgendaSelected({ day }) {
     setEvents(data);
   }
 
-  async function SearchDayAgenda () {
+  async function SearchDayAgenda() {
     // chama a função que busca os dias da semana ativos para atualizar o estado working
     const daysServices = await DaysWeek()
 
@@ -59,7 +60,7 @@ export default function AgendaSelected({ day }) {
 
     // verifica se o dia está ativo para agendamento
     const isDayActive = daysServices[dayIndex]?.ativo
-    
+
     // se não estiver ele retorna um alerta
     if (!isDayActive) {
       return Alert.alert("Dia não disponível para agendamento, ative o dia na aba de atendimento.");
@@ -80,19 +81,23 @@ export default function AgendaSelected({ day }) {
 
       if (data.length > 0) {
         //setWorking(data[0]?.days_week);
-        return(data[0]?.days_week);
+        return (data[0]?.days_week);
       }
     } catch (error) {
       Alert.alert("Erro ao carregar os dados");
     }
   }
 
+  useFocusEffect(() => {
+    if (day) {
+      fetchAgenda();
+    }
+  });
 
   useEffect(() => {
     if (day) {
       fetchAgenda();
     }
-
   }, [day]);
 
   return (
