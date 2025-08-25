@@ -6,11 +6,12 @@ import Button from '../../components/button';
 import { supabase } from '../../lib/supabase.js';
 
 export default function CardHome({ item }) {
-  async function finishBtn() {
+  async function sendStatus(status) {
+    console.log(item.id, status);
     try {
       const { data, error } = await supabase
         .from('appointments')
-        .update({ status: 'finished' })
+        .update({ status: status })
         .eq('id', item.id)
         .single();
 
@@ -42,12 +43,12 @@ export default function CardHome({ item }) {
         <Button
           title="Finalizar"
           btnStyle={styles.finishBtn}
-          onPress={() => finishBtn()}
+          onPress={() => sendStatus("finished")}
         />
         <Button
           title="Cancelar"
           btnStyle={styles.cancelBtn}
-          onPress={() => console.log('Cancelar', item.id)}
+          onPress={() => sendStatus("canceled")}
         />
       </View>
 
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 10,
     padding: 12,
+    marginBottom: 16, 
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },

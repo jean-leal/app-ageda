@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -69,11 +69,6 @@ export default function Services() {
       DaysWeek();
     }, [])
   );
-
-  // Carrega os dias de atendimento do usuário ao montar o componente
-  useEffect(() => {
-    //DaysWeek();
-  }, []);
 
   async function HandleUpdate() {
     const { data } = await supabase
@@ -174,7 +169,7 @@ const styles = StyleSheet.create({
   title: {
     width: 'auto',
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     margin: 16
   },
