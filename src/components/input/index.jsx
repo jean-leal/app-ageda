@@ -11,15 +11,14 @@ export default function Input({iconName, inputStyle, ...rest}) {
       <Ionicons style={styles.icon} name={iconName || "search"} size={28} color={colors.grayLight}/>
       <TextInput style={styles.input} { ...rest }/>
     </View>
-    
   );
 }
 
 const styles = StyleSheet.create({
   inputArea: {
+    display: "flex",
     borderWidth: 1,
     borderColor: colors.gray,
-    width: "100%",
     height: 50,
     flexDirection: "row",
     alignItems: "center",
@@ -31,7 +30,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   }, 
   input:{
-    //width: "100%",
+    width: "100%",   
     height: 50,
     paddingLeft: 10,
     paddingRight: 10,

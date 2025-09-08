@@ -19,6 +19,7 @@ import { maskTime } from '../../utils/masks/time';
 
 export default function Services() {
   const { user } = useAuth();
+  const [lunch, setLunch] = useState({ start: '00:00', end: '00:00' });
 
   const [working, setWorking] = useState([
     { id: 0, ativo: false, display: "Domingo", abertura: "08:00", fechamento: "18:00" },
@@ -57,6 +58,7 @@ export default function Services() {
 
       if (data.length > 0) {
         setWorking(data[0]?.days_week);
+        setLunch(data[0]?.lunch);
       }
     } catch (error) {
       Alert.alert("Erro ao carregar os dados");
@@ -81,7 +83,8 @@ export default function Services() {
         .from('services')
         .insert({
           user_id: user.id,
-          days_week: working
+          days_week: working,
+          lunch: lunch
         });
 
       if (error) {
@@ -92,7 +95,7 @@ export default function Services() {
     } else {
       const { error } = await supabase
         .from('services')
-        .update({ days_week: working })
+        .update({ days_week: working, lunch: lunch })
         .eq('user_id', user.id);
       if (error) {
         Alert.alert('Erro ao atualizar:', error.message);
@@ -111,7 +114,33 @@ export default function Services() {
           showsVerticalScrollIndicator={false}
           data={working}
           keyExtractor={item => item.id.toString()}
-          ListHeaderComponent={<Text style={styles.title}>Dias de atendimento</Text>}
+          ListHeaderComponent={
+            <>
+              <Text style={styles.title}>Dias de atendimento</Text>
+              <View style={{ borderWidth: 2, padding: 12, marginBottom: 12, borderRadius: 10 }}>
+                <Text>Horário de almoço.</Text>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <Input
+                    inputStyle={styles.inputHorario}
+                    placeholder='0:00'
+                    iconName={'time'}
+                    keyboardType="numeric"
+                    value={lunch?.start}
+                    onChangeText={(value) => setLunch({ ...lunch, start: maskTime(value) })}
+                    maxLength={5}
+                  />
+                  <Input
+                    inputStyle={styles.inputHorario}
+                    placeholder='0:00'
+                    iconName={'time'}
+                    keyboardType="numeric"
+                    value={lunch?.end}
+                    onChangeText={(value) => setLunch({ ...lunch, end: maskTime(value) })}
+                    maxLength={5}
+                  />
+                </View>
+              </View>
+            </>}
           renderItem={({ item }) => (
             <View style={[styles.containerItem, { backgroundColor: item.ativo ? colors.primary : colors.grayLight }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -121,20 +150,22 @@ export default function Services() {
               </View>
               {item.ativo && (
                 <View style={styles.containerHorario}>
-                  <View>
-                    <Text style={styles.text}>Horário de Abertura:</Text>
-                    <Input
-                      inputStyle={styles.inputHorario}
-                      placeholder='0:00'
-                      iconName={'time'}
-                      keyboardType="numeric"
-                      value={item.abertura}
-                      onChangeText={(value) => handleTimeChange(item.id, maskTime(value), 'abertura')}
-                      maxLength={5}
-                    />
+                  <View style={{ width: '45%' }}>
+                    <Text style={styles.text}>Abertura:</Text>
+                    <View>
+                      <Input
+                        inputStyle={styles.inputHorario}
+                        placeholder='0:00'
+                        iconName={'time'}
+                        keyboardType="numeric"
+                        value={item.abertura}
+                        onChangeText={(value) => handleTimeChange(item.id, maskTime(value), 'abertura')}
+                        maxLength={5}
+                      />
+                    </View>
                   </View>
-                  <View>
-                    <Text style={styles.text}>Horário de Fechamento:</Text>
+                  <View style={{ width: '45%' }}>
+                    <Text style={styles.text}>Fechamento:</Text>
                     <Input
                       inputStyle={styles.inputHorario}
                       placeholder='0:00'
@@ -164,7 +195,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
   title: {
     width: 'auto',
@@ -174,7 +205,7 @@ const styles = StyleSheet.create({
     margin: 16
   },
   containerItem: {
-    marginBottom: 12,
+    marginBottom: 10,
     padding: 10,
     borderRadius: 10
   },
@@ -194,5 +225,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     textAlign: 'center',
     marginTop: 6,
+    marginBottom: 2,
   }
 });
