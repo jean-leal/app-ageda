@@ -13,7 +13,7 @@ export const fetchAppointments = async (userId, date) => {
             `)
       .eq('user_id', userId)
       .eq('date', date)
-      .eq('status', 'active') 
+      //.eq('status', 'active') 
       .order("time", { ascending: true });
     if (error) {
       throw error;

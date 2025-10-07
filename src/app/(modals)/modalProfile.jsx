@@ -99,7 +99,7 @@ export default function ModalProfile({ closeModal }) {
         </TouchableOpacity>
       </View>
       <View style={styles.form}>
-        <Image source={image ? { uri: image } : require('../../assets/user.png')} style={styles.img} />
+        <Image source={image ? { uri: image } : require('../../../assets/user.png')} style={styles.img} />
         <View style={styles.containerIcon}>
           <TouchableOpacity onPress={uploadImage}>
             <Ionicons name="add" size={32} color="white" style={{ backgroundColor: 'red', borderRadius: 100 }} />

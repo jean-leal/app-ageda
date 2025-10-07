@@ -7,7 +7,6 @@ import { supabase } from '../../lib/supabase.js';
 
 export default function CardHome({ item }) {
   async function sendStatus(status) {
-    console.log(item.id, status);
     try {
       const { data, error } = await supabase
         .from('appointments')
@@ -23,7 +22,7 @@ export default function CardHome({ item }) {
   return (
     <View style={styles.card}>
       <View style={styles.cardBody}>
-        <Image source={require('../../assets/user.png')} style={styles.img} />
+        <Image source={require('../../../assets/user.png')} style={styles.img} />
         <View style={styles.details}>
           <View style={styles.cardName}>
             <Text style={styles.clientName}>{item.customers.name}</Text>

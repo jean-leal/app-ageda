@@ -45,10 +45,16 @@ export default function AgendaSelected({ day }) {
   async function fetchAgenda() {
     const data = await fetchAppointments(user.id, day);
     if (data.length > 0) {
+      //filtrando e separando por itens já finalizados e o "restante", no caso volta active
+      const finished = data.filter(item => item.status == 'finished')
+      const active = data.filter(item => item.status !== "finished")
+
+      setEvents([...active, ...finished]);
+    } else {
+      // Se não houver eventos, reseta o estado, passando um array vazio que esta sendo retornado pela função fetchAppointments
       setEvents(data);
     }
-    // Se não houver eventos, reseta o estado, passando um array vazio que esta sendo retornado pela função fetchAppointments
-    setEvents(data);
+
   }
 
   async function SearchDayAgenda() {
@@ -127,6 +133,7 @@ export default function AgendaSelected({ day }) {
                   <Text style={styles.title}>{item.customers.name}</Text>
                   <Text style={styles.text}>{'Serviço:  ' + item.work_name}</Text>
                   <Text style={styles.text}>{'Preço:  ' + item.work_price}</Text>
+                  <Text style={styles.text}>{'Status:  ' + item.status}</Text>
                 </View>
                 <View style={{ alignContent: 'center', justifyContent: 'center' }}>
                   <TouchableOpacity

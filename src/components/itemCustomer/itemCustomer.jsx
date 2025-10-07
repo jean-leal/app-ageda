@@ -12,7 +12,7 @@ export default function ItemCustomer({ customer, editCustomer }) {
   return (
     <View style={styles.body}>
       <View style={styles.itemContainer}>
-        <Image source={require('../../assets/user.png')} style={styles.img} />
+        <Image source={require('../../../assets/user.png')} style={styles.img} />
         <View style={{ flex: 1, paddingLeft: 10 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={styles.titleItem}>{customer.name}</Text>

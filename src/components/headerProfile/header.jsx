@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <View style={styles.container}>
       <Image
-        source={user?.url_image ? { uri: user?.url_image } : require('../../assets/user.png')}
+        source={user?.url_image ? { uri: user?.url_image } : require('../../../assets/user.png')}
         style={styles.img} />
       <View style={{ flex: 1, paddingLeft: 10 }}>
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>{user?.name}</Text>

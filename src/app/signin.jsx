@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Link } from "expo-router";
 
 import Button from '../components/button';
@@ -10,58 +10,65 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const {
-    loading,
-    SignIn
-  } = useAuth();
+  const { loading, SignIn } = useAuth();
 
   const handleSignIn = async () => {
     const ret = await SignIn({ email, password });
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <Image
-        source={require('../assets/logo.png')}
-        style={styles.img}
-      />
-      <Input 
-        iconName={'mail-outline'} 
-        placeholder={"Email"} 
-        inputStyle={{ marginBottom: 16 }} 
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Input 
-        iconName={'lock-closed-outline'} 
-        placeholder={"Senha"} 
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button
-        title="Entrar"
-        btnStyle={styles.btnStyle}
-        onPress={handleSignIn}
-        loading={loading}
-      />
-      <View style={{ flexDirection: 'row', marginTop: 12 }}>
-        <Text>Não tem conta?</Text>
-        <Link
-          href="signup"
-          style={{ marginLeft: 12, fontWeight: 'bold' }}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
         >
-          Criar Conta
-        </Link>
-      </View>
-    </View>
+          <Text style={styles.title}>Login</Text>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={styles.img}
+          />
+          <Input 
+            iconName={'mail-outline'} 
+            placeholder={"Email"} 
+            inputStyle={{ marginBottom: 16 }} 
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Input 
+            iconName={'lock-closed-outline'} 
+            placeholder={"Senha"} 
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <Button
+            title="Entrar"
+            btnStyle={styles.btnStyle}
+            onPress={handleSignIn}
+            loading={loading}
+          />
+          <View style={{ flexDirection: 'row', marginTop: 12 }}>
+            <Text>Não tem conta?</Text>
+            <Link
+              href="signup"
+              style={{ marginLeft: 12, fontWeight: 'bold' }}
+            >
+              Criar Conta
+            </Link>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -84,4 +91,3 @@ const styles = StyleSheet.create({
     marginBottom: 40
   }
 });
-
