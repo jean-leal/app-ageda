@@ -12,7 +12,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
           <MainLayout />
         </SafeAreaView>
       </SafeAreaProvider>
@@ -44,7 +44,10 @@ function MainLayout() {
 
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar style='dark' />{/* mudando a cor do status bar de acordo com a tela ativa */}
+      <StatusBar
+        style={pathname === '/signin' ? 'dark' : 'light'}
+        backgroundColor={pathname === '/signin' ? '#FFFFFF' : colors.primary}
+      />{/* mudando a cor do status bar de acordo com a tela ativa */}
       {/*<StatusBar style={pathname === '/signin' ? 'dark' : 'light'} /> mudando a cor do status bar de acordo com a tela ativa */}
       <Stack
         screenOptions={{

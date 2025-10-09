@@ -41,7 +41,7 @@ export default function CalendarComponent({selectedDay}) {
             selectedColor: colors.primary,
           },
         }}
-        minDate={new Date().toISOString()}
+        //minDate={new Date().toISOString()}
       />
     </View>
   )

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "agenda",
-    "scheme": "agenda",
-    "slug": "agenda",
+    "name": "Jagenda",
+    "scheme": "Jagenda",
+    "slug": "Jagenda",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -1,13 +1,14 @@
 const colors = {
-  primary: "#3E8CE3",
+  primary: "#26C6DA",
+  secondary: "#FF7043",
   black: "#000000",
   white: "#FFFFFF",
-  gray: "#4A4A4A",
-  success: "#00C853",
-  danger: "#E33C3C",
+  gray: "#A7B1B7",
+  success: "#5DD39E",
+  danger: "#FF5A5F",
   green: "#4CAF50",
   red: "#BF0000",
-  grayLight: "#B0B0B0",
+  grayLight: "#E5E8EB",
 };
 
 export default colors;

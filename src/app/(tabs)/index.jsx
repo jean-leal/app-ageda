@@ -17,7 +17,8 @@ export default function Home() {
   async function fetchAgenda() {
     try {
       const data = await fetchAppointments(user?.id, date);
-      setEvents(data);
+      const active = data.filter(item => item.status === "active")
+      setEvents(active);
     } catch (error) {
       console.error("Erro ao buscar agendamentos:", error);
     }

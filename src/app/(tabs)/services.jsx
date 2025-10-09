@@ -142,11 +142,11 @@ export default function Services() {
               </View>
             </>}
           renderItem={({ item }) => (
-            <View style={[styles.containerItem, { backgroundColor: item.ativo ? colors.primary : colors.grayLight }]}>
+            <View style={[styles.containerItem, { backgroundColor: item.ativo ? colors.primary : colors.gray }]}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text style={styles.textBold}>{item.display}</Text>
-                <Switch trackColor={{ false: colors.white, true: colors.white }}
-                  thumbColor={item.ativo ? colors.grayLight : colors.white} value={item.ativo} onValueChange={() => toggleSwitch(item.id)} />
+                <Text style={item.ativo ? styles.textBold : {color:colors.white, fontWeight: "bold"}}>{item.display}</Text>
+                <Switch trackColor={{ false: colors.secondary, true: colors.white }}
+                  thumbColor={item.ativo ? colors.white : colors.secondary} value={item.ativo} onValueChange={() => toggleSwitch(item.id)} />
               </View>
               {item.ativo && (
                 <View style={styles.containerHorario}>

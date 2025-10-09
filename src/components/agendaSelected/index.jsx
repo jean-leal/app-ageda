@@ -47,7 +47,7 @@ export default function AgendaSelected({ day }) {
     if (data.length > 0) {
       //filtrando e separando por itens já finalizados e o "restante", no caso volta active
       const finished = data.filter(item => item.status == 'finished')
-      const active = data.filter(item => item.status !== "finished")
+      const active = data.filter(item => item.status === 'active')
 
       setEvents([...active, ...finished]);
     } else {
@@ -124,41 +124,72 @@ export default function AgendaSelected({ day }) {
           <FlatList
             data={events}
             keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.item}>
-                <View style={styles.itemDivTime}>
-                  <Text style={styles.time}>{item.time}</Text>
-                </View>
-                <View style={styles.itemDivObs}>
-                  <Text style={styles.title}>{item.customers.name}</Text>
-                  <Text style={styles.text}>{'Serviço:  ' + item.work_name}</Text>
-                  <Text style={styles.text}>{'Preço:  ' + item.work_price}</Text>
-                  <Text style={styles.text}>{'Status:  ' + item.status}</Text>
-                </View>
-                <View style={{ alignContent: 'center', justifyContent: 'center' }}>
-                  <TouchableOpacity
-                    style={{ alignContent: 'center', justifyContent: 'center' }}
-                    onPress={() => handleDelete(item.id)}
+            renderItem={({ item }) => {
+              const isFinished = item.status === 'finished';
+              return (
+                <View
+                  style={[
+                    styles.item,
+                    isFinished && styles.itemFinished // aplica estilo diferente
+                  ]}
+                >
+                   
+                  <View
+                    style={[ styles.itemDivTime, isFinished && styles.itemDivTimeFinished ]}
                   >
-                    <Ionicons
-                      name="trash"
-                      size={24}
-                      color={colors.danger}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{ marginTop: 10, alignContent: 'center', justifyContent: 'center' }}
-                    onPress={() => console.log("Abrir WhatsApp")}
-                  >
-                    <Ionicons
-                      name="logo-whatsapp"
-                      size={24}
-                      color={colors.success}
-                    />
-                  </TouchableOpacity>
+                    <Text
+                      style={[ styles.time, isFinished && styles.textFinished ]}
+                    >
+                      {item.time}
+                    </Text>
+                  </View>
+
+                  <View style={styles.itemDivObs}>
+                   {isFinished &&  <Text style={{ paddingBottom: 6, fontSize: 16 ,textAlign:'right', color: colors.success, fontWeight: 'bold' }}>
+                      Finalizado
+                    </Text>
+                    }
+                    <Text
+                      style={[ styles.title, isFinished && styles.textFinished]}
+                    >
+                      {item.customers.name}
+                    </Text>
+                    <Text style={[styles.text, isFinished && styles.textFinished]}>
+                      {'Serviço:  ' + item.work_name}
+                    </Text>
+                    <Text style={[styles.text, isFinished && styles.textFinished]}>
+                      {'Preço:  R$ ' + item.work_price}
+                    </Text>
+                  </View>
+
+                  <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <TouchableOpacity
+                      onPress={() => handleDelete(item.id)}
+                    >
+                      <Ionicons
+                        name="trash"
+                        size={24}
+                        color={isFinished ? colors.gray : colors.danger}
+                      />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={{ marginTop: 10 }}
+                      onPress={() => console.log('Abrir WhatsApp')}
+                    >
+                      {
+                        !isFinished ? (
+                          <Ionicons
+                        name="logo-whatsapp"
+                        size={24}
+                        color={isFinished ? colors.gray : colors.success}
+                      />) : ('')
+                      }
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
+              );
+            }}
           />
         </View>
       )}
@@ -243,5 +274,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.5, // para iOS
     zIndex: 1, // para garantir que fique acima de outros componentes
+  },
+  itemFinished: {
+    backgroundColor: '#f0f0f0', // fundo cinza claro
+    borderColor: colors.grayLight, // borda mais suave
+  },
+
+  itemDivTimeFinished: {
+    borderColor: colors.grayLight,
+  },
+
+  textFinished: {
+    color: colors.gray, // texto acinzentado
   },
 });
