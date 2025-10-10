@@ -21,97 +21,91 @@ export default function CardHome({ item }) {
   }
   return (
     <View style={styles.card}>
-      <View style={styles.cardBody}>
-        <Image source={require('../../../assets/user.png')} style={styles.img} />
+      <View style={styles.body}>
+        <View style={styles.time}>
+          <Text style={styles.timeText}>{item.time}</Text>
+        </View>
         <View style={styles.details}>
-          <View style={styles.cardName}>
-            <Text style={styles.clientName}>{item.customers.name}</Text>
-            <Text style={styles.detailText}>{item.work_name}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={styles.cardName}>
+              <Text style={styles.clientName}>{item.customers.name}</Text>
+              <Text style={styles.detailText}>{item.work_name}</Text>
+            </View>
+            <View style={styles.cardPrice}>
+              <Text style={styles.price}>R$ {item.work_price}</Text>
+            </View>
           </View>
-          <View style={styles.cardPrice}>
-            <Text style={styles.price}>R$ {item.work_price}</Text>
+
+          <View style={{ flexDirection: 'row', alignContent: 'center', justifyContent: 'flex-end' }}>
+            <Button
+              title="Cancelar"
+              btnStyle={styles.cancelBtn}
+              onPress={() => sendStatus("canceled")}
+            />
+            <Button
+              title="Finalizar"
+              btnStyle={styles.finishBtn}
+              onPress={() => sendStatus("finished")}
+            />
           </View>
         </View>
-        <View style={styles.cardTime}>
-          <Text style={styles.clientName}>Horário</Text>
-          <Text style={styles.time}>{item.time}</Text>
-        </View>
       </View>
-
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Button
-          title="Finalizar"
-          btnStyle={styles.finishBtn}
-          onPress={() => sendStatus("finished")}
-        />
-        <Button
-          title="Cancelar"
-          btnStyle={styles.cancelBtn}
-          onPress={() => sendStatus("canceled")}
-        />
-      </View>
-
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  img: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: colors.white,
-    marginRight: 8
-  },
   card: {
     backgroundColor: colors.primary,
     borderRadius: 10,
+    marginBottom: 16,
     padding: 12,
-    marginBottom: 16, 
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 3
+    elevation: 3,
   },
   cardName: {
     marginHorizontal: 8
   },
-  cardTime: {
+  time: {
     justifyContent: 'center',
     alignItems: 'center',
+    borderRightWidth: 1,
+    paddingRight: 8,
+    borderColor: colors.white
   },
   cardPrice: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   clientName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: colors.white
   },
-  cardBody: {
+  body: {
     flexDirection: 'row',
-    alignItems: 'flex-start'
   },
-  time: {
-    fontSize: 22,
+  timeText: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: colors.white,
+    borderWidth: 3,
+    borderColor: colors.white,
+    borderRadius: 40,
+    width: 80,
+    height: 80,
+    textAlign: 'center',
+    textAlignVertical: 'center'
   },
   details: {
-    flex: 1,
-    justifyContent: 'center',
+    flex: 1
   },
   detailText: {
     fontSize: 14,
     color: colors.white
-  },
-  finishBtn: {
-    backgroundColor: colors.success,
-    marginTop: 16,
-    width: '50%',
   },
   price: {
     fontSize: 22,
@@ -122,7 +116,14 @@ const styles = StyleSheet.create({
   cancelBtn: {
     backgroundColor: colors.danger,
     marginTop: 16,
-    width: '50%',
+    width: '35%',
+    height: 40,
+  },
+  finishBtn: {
+    backgroundColor: colors.success,
+    marginTop: 16,
+    width: '35%',
+    height: 40,
     marginLeft: 8
   }
 });
