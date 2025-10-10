@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Jagenda",
-    "scheme": "Jagenda",
-    "slug": "Jagenda",
+    "scheme": "jagenda",
+    "slug": "jagenda",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,7 @@
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.jeanlds13.agenda"
+      "package": "com.jeanlds13.jagenda"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,7 +38,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "e6639d07-7b82-4122-aff0-b096f1c6c5e0"
+        "projectId": "883dbe9d-02b9-4c79-8466-6b0e7f3d5d10"
       }
     }
   }
