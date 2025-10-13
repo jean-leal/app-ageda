@@ -17,11 +17,12 @@ export default function Tab() {
   async function handleSignOut() {
     try {
       const { error } = await supabase.auth.signOut();
-      setAuth(null);
 
       if (error) {
         Alert.alert('Erro', error.message);
+        return;
       }
+
     } catch (err) {
       Alert.alert('Erro inesperado', err.message);
     }

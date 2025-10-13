@@ -72,33 +72,29 @@ const styles = StyleSheet.create({
   time: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 1,
-    paddingRight: 8,
-    borderColor: colors.white
+    borderWidth: 3,
+    borderColor: colors.white,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  timeText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.white,
   },
   cardPrice: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   clientName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: colors.white
   },
   body: {
     flexDirection: 'row',
-  },
-  timeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.white,
-    borderWidth: 3,
-    borderColor: colors.white,
-    borderRadius: 40,
-    width: 80,
-    height: 80,
-    textAlign: 'center',
-    textAlignVertical: 'center'
+    alignItems: 'center',
   },
   details: {
     flex: 1
@@ -108,7 +104,7 @@ const styles = StyleSheet.create({
     color: colors.white
   },
   price: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: colors.white,
     marginLeft: 8

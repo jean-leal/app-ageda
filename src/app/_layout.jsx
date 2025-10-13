@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { Stack, usePathname, router } from "expo-router";
-import { View } from "react-native";
+import { Stack, usePathname, useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import colors from "../constants/theme";
@@ -12,16 +11,14 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "transparent" }}>
-          <MainLayout />
-        </SafeAreaView>
+        <MainLayout />
       </SafeAreaProvider>
     </AuthProvider>
-
   )
 }
 
 function MainLayout() {
+  const router = useRouter();
   const pathname = usePathname();// encontrando qual tela esta ativa no momento
   const { setAuth } = useAuth();
 
@@ -31,11 +28,9 @@ function MainLayout() {
       if (session?.user) {
         setAuth(session.user);
         router.replace('/(tabs)');
-        return;
-      }
-      // caso o usuario nao esteja logado, seta o usuario como null e redireciona para a tela de login
-      setAuth(null);
-      router.replace('/signin');
+      } else{
+        router.replace('/signin');
+      }      
     });
     return () => {
       listener.subscription.unsubscribe();
@@ -43,12 +38,11 @@ function MainLayout() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: pathname === '/signin' ? '#FFFFFF' : colors.primary }}>
       <StatusBar
         style={pathname === '/signin' ? 'dark' : 'light'}
         backgroundColor={pathname === '/signin' ? '#FFFFFF' : colors.primary}
       />{/* mudando a cor do status bar de acordo com a tela ativa */}
-      {/*<StatusBar style={pathname === '/signin' ? 'dark' : 'light'} /> mudando a cor do status bar de acordo com a tela ativa */}
       <Stack
         screenOptions={{
           headerStyle: {
@@ -87,6 +81,6 @@ function MainLayout() {
             headerShown: false
           }} />
       </Stack>
-    </View>
+    </SafeAreaView>
   )
 }

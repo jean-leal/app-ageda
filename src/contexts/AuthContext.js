@@ -1,6 +1,6 @@
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Alert } from "react-native";
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';
 
@@ -9,6 +9,7 @@ import { supabase } from '../lib/supabase';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -87,29 +88,28 @@ export function AuthProvider({ children }) {
       .eq('id', authUser.id)
       .single();
 
-    setUser(data);
-
     if (error) {
       Alert.alert('Error', error.message);
       return;
+    } else {
+      setUser(data);
     }
-
   }
 
   async function UpdateUser(userUpdate) {
 
-      const {data, error} = await supabase
-        .from('users')
-        .update(userUpdate)
-        .eq('id', user.id)
-        .single();
-      if (error) {
-        Alert.alert('Error', error.message);
-        return false;
-      }
-      setUser({...user, ...userUpdate});
-      return true;
-      
+    const { data, error } = await supabase
+      .from('users')
+      .update(userUpdate)
+      .eq('id', user.id)
+      .single();
+    if (error) {
+      Alert.alert('Error', error.message);
+      return false;
+    }
+    setUser({ ...user, ...userUpdate });
+    return true;
+
   }
   async function uploadImg(uri) {
     try {
