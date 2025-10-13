@@ -76,7 +76,7 @@ export default function Works() {
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 }}>
                     <Text style={styles.titleItem}>{item.name}</Text>
                   </View>
-                  <View style={{ flexDirection: 'row'}}>
+                  <View style={{ flexDirection: 'row' }}>
                     <View style={styles.itemTime}>
                       <Ionicons style={styles.icon} name={"time-outline"} size={26} color={colors.white} />
                       <Text style={styles.text}>{minutesToTime(item.duration)}</Text>
@@ -95,6 +95,10 @@ export default function Works() {
                 </View>
               </View>
             )}
+            ListFooterComponent={
+              <View style={{ marginBottom: 60 }}>
+              </View>
+            }
           />
         }
         <Modal
@@ -161,8 +165,8 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 80, // ajuste conforme necessário para não ficar colado na barra
     backgroundColor: colors.primary,
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

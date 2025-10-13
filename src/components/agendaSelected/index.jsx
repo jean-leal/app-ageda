@@ -8,6 +8,7 @@ import { useAuth } from '../../contexts/AuthContext.js';
 import { supabase } from '../../lib/supabase.js';
 import { fetchAppointments } from '../../utils/functions/fetchBD.js';
 import ModalAddAgenda from '../../app/(modals)/modalAddAgenda.jsx';
+import { messageWhatsApp } from '../../utils/functions/whatsApp.js';
 
 export default function AgendaSelected({ day }) {
   const { user } = useAuth();
@@ -133,24 +134,24 @@ export default function AgendaSelected({ day }) {
                     isFinished && styles.itemFinished // aplica estilo diferente
                   ]}
                 >
-                   
+
                   <View
-                    style={[ styles.itemDivTime, isFinished && styles.itemDivTimeFinished ]}
+                    style={[styles.itemDivTime, isFinished && styles.itemDivTimeFinished]}
                   >
                     <Text
-                      style={[ styles.time, isFinished && styles.textFinished ]}
+                      style={[styles.time, isFinished && styles.textFinished]}
                     >
                       {item.time}
                     </Text>
                   </View>
 
                   <View style={styles.itemDivObs}>
-                   {isFinished &&  <Text style={{ paddingBottom: 6, fontSize: 16 ,textAlign:'right', color: colors.success, fontWeight: 'bold' }}>
+                    {isFinished && <Text style={{ paddingBottom: 6, fontSize: 16, textAlign: 'right', color: colors.success, fontWeight: 'bold' }}>
                       Finalizado
                     </Text>
                     }
                     <Text
-                      style={[ styles.title, isFinished && styles.textFinished]}
+                      style={[styles.title, isFinished && styles.textFinished]}
                     >
                       {item.customers.name}
                     </Text>
@@ -175,21 +176,25 @@ export default function AgendaSelected({ day }) {
 
                     <TouchableOpacity
                       style={{ marginTop: 10 }}
-                      onPress={() => console.log('Abrir WhatsApp')}
+                      onPress={() => messageWhatsApp({message: "abrir o whatsApp ",  phone :item.customers.phone})}
                     >
                       {
                         !isFinished ? (
                           <Ionicons
-                        name="logo-whatsapp"
-                        size={24}
-                        color={isFinished ? colors.gray : colors.success}
-                      />) : ('')
+                            name="logo-whatsapp"
+                            size={24}
+                            color={isFinished ? colors.gray : colors.success}
+                          />) : ('')
                       }
                     </TouchableOpacity>
                   </View>
                 </View>
               );
             }}
+            ListFooterComponent={
+              <View style={{ marginBottom: 60 }}>
+              </View>
+            }
           />
         </View>
       )}
@@ -263,8 +268,8 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 80, // ajuste conforme necessário para não ficar colado na barra
     backgroundColor: colors.primary,
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

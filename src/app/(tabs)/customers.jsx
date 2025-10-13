@@ -22,7 +22,8 @@ export default function Customers() {
       const { data, error } = await supabase
         .from('customers')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .order('name', { ascending: true });
 
       if (data.length > 0) {
         setCustomers(data);
@@ -38,7 +39,7 @@ export default function Customers() {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header/>
       {
         //deixando o botão flutuante fora do corpo para ficar no rodape  
       }
@@ -67,10 +68,14 @@ export default function Customers() {
             </View>
           )}
           ListHeaderComponent={() => (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 16 }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 16 }}>
               <Text style={styles.title}>Clientes</Text>
             </View>
           )}
+          ListFooterComponent={
+            <View style={{marginBottom:60}}>
+            </View>
+          }
         />
 
         <Modal
@@ -98,11 +103,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-  },
+    },
   body: {
+    backgroundColor: "transparent",
     flex: 1,
-    width: "100%",
-    padding: 16
+    //width: "100%",
+    paddingHorizontal: 16,
   },
   title: {
     fontSize: 18,
@@ -135,8 +141,8 @@ const styles = StyleSheet.create({
     right: 20,
     bottom: 80,
     backgroundColor: colors.primary,
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

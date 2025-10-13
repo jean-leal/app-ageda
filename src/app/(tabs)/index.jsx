@@ -41,7 +41,6 @@ export default function Home() {
       <Header />
       <View style={styles.body}>
         <Text style={styles.title}>Agendamentos do dia</Text>
-
         <FlatList
           data={events}
           keyExtractor={(item) => item.id.toString()}
@@ -52,6 +51,10 @@ export default function Home() {
           )}
           ListEmptyComponent={<Text style={styles.emptyText}>Nenhum agendamento para hoje.</Text>}
           contentContainerStyle={{ paddingBottom: 80 }}
+          ListFooterComponent={
+            <View style={{ marginBottom: 60 }}>
+            </View>
+          }
         />
       </View>
     </View>
