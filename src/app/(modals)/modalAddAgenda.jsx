@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginHorizontal: 20,
     overflow: "hidden",
+    minHeight: '45%',
   },
   boxTitle: {
     paddingHorizontal: 18,

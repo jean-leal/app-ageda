@@ -77,6 +77,7 @@ export default function ModalSelectCustomer({
               </View>
             )}
             showsVerticalScrollIndicator={false}
+            ListFooterComponent={<View style={{ marginBottom: 100 }} ></View>}
           />
         </View>
       </View>
@@ -93,10 +94,12 @@ const styles = StyleSheet.create({
   },
   container: {
     width: 350,
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     borderRadius: 10,
     padding: 24,
-    overflow: "hidden"
+    overflow: "hidden", 
+    maxHeight: '60%',
+    minHeight: '60%',
   },
   boxTitle: {
     flexDirection: 'row',
