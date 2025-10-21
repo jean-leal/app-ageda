@@ -83,7 +83,7 @@ export default function Tab() {
           title="Sair do App"
           onPress={handleSignOut}
           btnStyle={{
-            backgroundColor: colors.grayLight,
+            backgroundColor: colors.darkGray,
             width: '90%',
             marginTop: 12,
           }}

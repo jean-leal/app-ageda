@@ -127,6 +127,24 @@ export default function AgendaSelected({ day }) {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => {
               const isFinished = item.status === 'finished';
+              
+              const msgWhatsApp = `Olá!
+Passando para confirmar seu horário:
+📅  *${item.date.split('-').reverse().join('/')}*
+🕰️  *${item.time}h*
+📍  *Rua: ${user.address ? user.address : "Adicione seu endereco no perfil do estabelecimento..."}, N° ${user.number ? user.number : "Adicione seu numero no perfil estabelecimento..."}*
+
+✨  *Procedimento:*
+    •  ${item.work_name}
+💰  *Valor:* R$ ${item.work_price}  
+
+⏰  *Tolerância de atraso:* 10 minutos.
+
+⚠️  Qualquer imprevisto, por favor, avise com antecedência. 
+
+Te espero!!!  
+Tenha um ótimo dia!
+              `;
               return (
                 <View
                   style={[
@@ -176,7 +194,7 @@ export default function AgendaSelected({ day }) {
 
                     <TouchableOpacity
                       style={{ marginTop: 10 }}
-                      onPress={() => messageWhatsApp({message: "abrir o whatsApp ",  phone :item.customers.phone})}
+                      onPress={() => messageWhatsApp({ message: msgWhatsApp, phone: item.customers.phone })}
                     >
                       {
                         !isFinished ? (
