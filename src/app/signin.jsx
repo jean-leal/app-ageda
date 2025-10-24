@@ -31,11 +31,11 @@ export default function App() {
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.title}>Login</Text>
           <Image
             source={require('../../assets/logo.png')}
             style={styles.img}
           />
+          
           <Input
             iconName={'mail-outline'}
             placeholder={"Email"}
@@ -71,7 +71,7 @@ export default function App() {
               onPress={() => setOpenModal(true)}
             >
               <Text style={{ fontWeight: 'bold', color: colors.darkGray, textDecorationLine: 'underline'}}>
-                Esqueci minha senha.
+                Esqueci minha senha!
               </Text>
             </TouchableOpacity>
           </View>
@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
   },
   title: {
     width: '100%',
-    fontSize: 48,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 48
+    marginBottom: 12
   },
   btnStyle: {
     textAlign: 'start',
@@ -112,6 +112,6 @@ const styles = StyleSheet.create({
   img: {
     //width: 150,
     //height: 200,
-    marginBottom: 40
+    marginBottom: 50
   }
 });

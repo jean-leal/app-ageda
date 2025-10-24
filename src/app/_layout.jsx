@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import * as Linking from 'expo-linking';
 import { StatusBar } from "expo-status-bar";
 import { Stack, usePathname, useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -21,14 +20,19 @@ export default function RootLayout() {
 function MainLayout() {
   const router = useRouter();
   const pathname = usePathname();// encontrando qual tela esta ativa no momento
-  const { setAuth } = useAuth();
+  const { setAuth, isPasswordResetFlow } = useAuth();
 
   useEffect(() => {
+    //escutando mudanças na autenticação do supabase
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       // caso o usuario esteja logado, seta o usuario no contexto e redireciona para a tela home
       if (session?.user) {
-        setAuth(session.user);
-        router.replace('/(tabs)');
+        if (!isPasswordResetFlow) {
+
+          setAuth(session.user);
+          //condicional para evitar que abra o app quando fazer um reset de senha
+          event === 'PASSWORD_RECOVERY' ? '' : router.replace('/(tabs)');
+        }
       } else {
         router.replace('/signin');
       }
@@ -38,23 +42,6 @@ function MainLayout() {
       listener.subscription.unsubscribe();
     }
   }, []);
-
-   useEffect(() => {
-      const handleDeepLink = (event) => {
-        console.log("🔗 URL recebida:", event.url);
-      };
-  
-      // Quando o app já está aberto
-      const subscription = Linking.addEventListener('url', handleDeepLink);
-  
-      // Quando o app é aberto pelo link
-      const initialUrl = Linking.getInitialURL();
-      initialUrl.then((url) => {
-        if (url) console.log("🔗 URL inicial:", url);
-      });
-  
-      return () => subscription.remove();
-    }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: pathname === '/signin' || pathname === '/resetPassword' ? '#FFFFFF' : colors.primary }}>

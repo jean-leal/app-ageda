@@ -13,15 +13,17 @@ export default function ModalPasswordRecovery({ closeModal }) {
   const router = useRouter();
 
   async function handlePasswordRecovery(email) {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "jagenda://resetPassword"
-    })
-     if (error) {
-    Alert.alert("Erro ao enviar e-mail:", error.message);
-  } else {
-    Alert.alert("Verifique seu e-mail", "Enviamos um link para redefinir sua senha.");
-    router.replace('/signin');
-  }
+    //enviando o email de recuperação de senha
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+    if (error) {
+      Alert.alert("Erro ao enviar e-mail:", error.message);
+    } else {
+      Alert.alert("Verifique seu e-mail", "Enviamos um token para redefinir sua senha.");
+      router.push({
+        pathname: '/resetPassword',
+        params: { email: email }
+      })
+    }
   }
 
   return (

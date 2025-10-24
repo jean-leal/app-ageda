@@ -7,7 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "deepLinks": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -28,7 +27,18 @@
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.jeanlds13.jagenda"
+      "package": "com.jeanlds13.jagenda",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "jagenda"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

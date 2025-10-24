@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isPasswordResetFlow, setIsPasswordResetFlow] = useState(false);
 
   async function SignUp({ name, email, password, passwordConfirm }) {
     setLoading(true);
@@ -160,7 +161,9 @@ export function AuthProvider({ children }) {
       user,
       setAuth,
       UpdateUser,
-      uploadImg
+      uploadImg, 
+      isPasswordResetFlow,
+      setIsPasswordResetFlow
     }}>
       {children}
     </AuthContext.Provider>
