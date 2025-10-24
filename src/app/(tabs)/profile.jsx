@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, StyleSheet, Image, Modal, Alert } from 'react-native';
 
-import Button from '../../components/button';
+import Button from '../../components/button/';
 import ItemProfile from '../../components/itemProfile/itemProfile';
 import ModalProfile from '../(modals)/modalProfile';
 

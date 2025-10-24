@@ -7,6 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "deepLinks": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -40,6 +41,7 @@
       "router": {
         "origin": false
       },
+      "routerRoot": "src/app",
       "eas": {
         "projectId": "883dbe9d-02b9-4c79-8466-6b0e7f3d5d10"
       }

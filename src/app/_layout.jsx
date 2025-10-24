@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import * as Linking from 'expo-linking';
 import { StatusBar } from "expo-status-bar";
 import { Stack, usePathname, useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -28,20 +29,38 @@ function MainLayout() {
       if (session?.user) {
         setAuth(session.user);
         router.replace('/(tabs)');
-      } else{
+      } else {
         router.replace('/signin');
-      }      
+      }
     });
+
     return () => {
       listener.subscription.unsubscribe();
     }
   }, []);
 
+   useEffect(() => {
+      const handleDeepLink = (event) => {
+        console.log("🔗 URL recebida:", event.url);
+      };
+  
+      // Quando o app já está aberto
+      const subscription = Linking.addEventListener('url', handleDeepLink);
+  
+      // Quando o app é aberto pelo link
+      const initialUrl = Linking.getInitialURL();
+      initialUrl.then((url) => {
+        if (url) console.log("🔗 URL inicial:", url);
+      });
+  
+      return () => subscription.remove();
+    }, []);
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: pathname === '/signin' ? '#FFFFFF' : colors.primary }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: pathname === '/signin' || pathname === '/resetPassword' ? '#FFFFFF' : colors.primary }}>
       <StatusBar
-        style={pathname === '/signin' ? 'dark' : 'light'}
-        backgroundColor={pathname === '/signin' ? '#FFFFFF' : colors.primary}
+        style={pathname === '/signin' || pathname === '/resetPassword' ? 'dark' : 'light'}
+        backgroundColor={pathname === '/signin' || pathname === '/resetPassword' ? '#FFFFFF' : colors.primary}
       />{/* mudando a cor do status bar de acordo com a tela ativa */}
       <Stack
         screenOptions={{
@@ -77,6 +96,11 @@ function MainLayout() {
           }} />
         <Stack.Screen
           name="(tabs)"
+          options={{
+            headerShown: false
+          }} />
+        <Stack.Screen
+          name="resetPassword"
           options={{
             headerShown: false
           }} />

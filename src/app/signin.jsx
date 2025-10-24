@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Image, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Link } from "expo-router";
+import { View, StyleSheet, Text, Image, KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, Keyboard, Modal, TouchableOpacity } from 'react-native';
+import { Link, useRouter} from "expo-router";
 
 import Button from '../components/button';
 import Input from '../components/input';
 import { useAuth } from '../contexts/AuthContext';
 
+import ModalPasswordRecovery from './(modals)/auth/modalPasswordRecovery';
+import colors from '../constants/theme';
+
 export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
 
   const { loading, SignIn } = useAuth();
 
@@ -31,16 +36,16 @@ export default function App() {
             source={require('../../assets/logo.png')}
             style={styles.img}
           />
-          <Input 
-            iconName={'mail-outline'} 
-            placeholder={"Email"} 
-            inputStyle={{ marginBottom: 16 }} 
+          <Input
+            iconName={'mail-outline'}
+            placeholder={"Email"}
+            inputStyle={{ marginBottom: 16 }}
             value={email}
             onChangeText={setEmail}
           />
-          <Input 
-            iconName={'lock-closed-outline'} 
-            placeholder={"Senha"} 
+          <Input
+            iconName={'lock-closed-outline'}
+            placeholder={"Senha"}
             secureTextEntry
             value={password}
             onChangeText={setPassword}
@@ -60,7 +65,26 @@ export default function App() {
               Criar Conta
             </Link>
           </View>
+          <View style={{ marginTop: 16 }}>
+           
+            <TouchableOpacity
+              onPress={() => setOpenModal(true)}
+            >
+              <Text style={{ fontWeight: 'bold', color: colors.darkGray, textDecorationLine: 'underline'}}>
+                Esqueci minha senha.
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Modal
+            visible={openModal}
+            animationType="slide"
+            transparent
+            closeModal={() => setOpenModal(false)}
+          >
+            <ModalPasswordRecovery closeModal={() => setOpenModal(false)} />
+          </Modal>
         </ScrollView>
+
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   )
@@ -86,8 +110,8 @@ const styles = StyleSheet.create({
     width: '80%'
   },
   img: {
-    width: 150,
-    height: 150,
+    //width: 150,
+    //height: 200,
     marginBottom: 40
   }
 });
