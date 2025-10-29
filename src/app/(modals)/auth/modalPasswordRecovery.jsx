@@ -7,9 +7,11 @@ import colors from "../../../constants/theme";
 import Button from "../../../components/button";
 import Input from "../../../components/input";
 import { supabase } from "../../../lib/supabase";
+import { validateEmail } from "../../../utils/functions/validations";
 
 export default function ModalPasswordRecovery({ closeModal }) {
   const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(false);
   const router = useRouter();
 
   async function handlePasswordRecovery(email) {
@@ -26,6 +28,13 @@ export default function ModalPasswordRecovery({ closeModal }) {
     }
   }
 
+  function handleEmailChange(text) {
+    setEmail(text);
+    setEmailValid(validateEmail(text));
+  }
+
+  console.log(emailValid);
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', marginBottom: 16 }}>
@@ -38,12 +47,14 @@ export default function ModalPasswordRecovery({ closeModal }) {
         iconName="mail-outline"
         placeholder="Digite seu email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={handleEmailChange}
       />
       <Button
         title="Recuperar senha"
         btnStyle={{ marginTop: 16 }}
-        onPress={() => handlePasswordRecovery(email)} />
+        onPress={() => handlePasswordRecovery(email)}
+        disabled={!emailValid}
+        loading={!emailValid} />
     </View>
   )
 }
