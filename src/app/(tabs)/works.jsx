@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
 import Header from '../../components/headerProfile/header.jsx';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFocusEffect } from 'expo-router';
 
 import colors from '../../constants/theme.js';
 import ModalWork from '../(modals)/modalWork.jsx';
@@ -33,11 +34,13 @@ export default function Works() {
 
     }
   }
-  useEffect(() => {
+  
+  useFocusEffect(
+    useCallback(() => {
+      fetchWorks()
+    }, [works])
+  );
 
-    fetchWorks()
-
-  }, [])
 
   //passando as informaçoes do work que vai ser editado 
   function EdtiWork(work) {

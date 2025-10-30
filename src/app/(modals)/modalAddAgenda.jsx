@@ -63,62 +63,63 @@ export default function ModalAddAgenda({
 
   // função para buscar os horários disponíveis
   async function fetchTime() {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('user_id', user.id)
+  try {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .eq('user_id', user.id);
 
-      if (error) {
-        throw error;
-      }
+    if (error) throw error;
 
-      // adiciona a hora atual para evitar problemas de fuso horário
-      const date = `${selectedDate}T${new Date().toTimeString().split(' ')[0]}`;
-
-      // pega o dia que esta sendo passado e transforma em dia da semana
-      const dayIndex = weekDays[new Date(date).getDay()];
-
-      // passando o dia da semana para a consulta
-      const dayWork = data[0]?.days_week
-
-      // verifica se o dia existe no array de dias da semana
-      const resultDate = dayWork.find(day => day.display === dayIndex);
-
-      // verifica se o dia está ativo para agendamento
-      if (!resultDate || resultDate.ativo === false) {
-        console.log('Dia não disponível para agendamento');
-        return
-      }
-
-      // convertendo horario inicial e final em um array de horários
-      const timeSlots = await timeToMinutes(resultDate?.abertura, resultDate?.fechamento)
-      //console.log('Horários disponíveis:', timeSlots);
-
-      // cria lista de horários ocupados com base nos agendamentos
-      const occupiedSlots = appointments.map(item => {
-        const [h, m] = item.time.split(":").map(Number);
-        const start = h * 60 + m;
-        const end = start + Number(item.work_duration || 0);
-        return { start, end };
-      });
-      // filtra horários disponíveis
-      const availableSlots = timeSlots.filter(slot => {
-        const [h, m] = slot.split(":").map(Number);
-        const slotMinutes = h * 60 + m;
-
-        // verifica se o horário cai dentro de algum intervalo ocupado
-        return !occupiedSlots.some(
-          ({ start, end }) => slotMinutes >= start && slotMinutes < end
-        );
-      });
-      //passa os horários disponíveis para o estado
-      setTimeSlots(availableSlots);
-
-    } catch (error) {
-      console.error('Erro ao buscar horários:', error.message);
+    if (!data || data.length === 0) {
+      console.warn('Nenhum serviço encontrado.');
+      setTimeSlots([]);
+      return;
     }
+
+    const date = `${selectedDate}T${new Date().toTimeString().split(' ')[0]}`;
+    const dayIndex = weekDays[new Date(date).getDay()];
+
+    const dayWork = data[0]?.days_week;
+
+    if (!Array.isArray(dayWork)) {
+      console.warn('days_week não é um array válido:', dayWork);
+      setTimeSlots([]);
+      return;
+    }
+
+    const resultDate = dayWork.find(day => day.display === dayIndex);
+
+    if (!resultDate || resultDate.ativo === false) {
+      console.log('Dia não disponível para agendamento');
+      setTimeSlots([]);
+      return;
+    }
+
+    const timeSlots = await timeToMinutes(resultDate.abertura, resultDate.fechamento);
+
+    // 🔒 Protege caso appointments venha undefined
+    const occupiedSlots = (appointments ?? []).map(item => {
+      const [h, m] = item.time.split(":").map(Number);
+      const start = h * 60 + m;
+      const end = start + Number(item.work_duration || 0);
+      return { start, end };
+    });
+
+    const availableSlots = timeSlots.filter(slot => {
+      const [h, m] = slot.split(":").map(Number);
+      const slotMinutes = h * 60 + m;
+
+      return !occupiedSlots.some(
+        ({ start, end }) => slotMinutes >= start && slotMinutes < end
+      );
+    });
+
+    setTimeSlots(availableSlots);
+  } catch (error) {
+    console.error('Erro ao buscar horários:', error.message);
   }
+}
 
   async function handleRegister() {
     // Verifica se o usuário selecionou um cliente, serviço e horário
@@ -218,7 +219,7 @@ export default function ModalAddAgenda({
                   }}
                 >
                   <Text style={item?.id === selectedWork?.id ? styles.textWorkSelected : styles.textWork}>
-                    {item.name}
+                    {item?.name}
                   </Text>
                 </TouchableOpacity>
               )}

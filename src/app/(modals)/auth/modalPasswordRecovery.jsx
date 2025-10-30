@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from "expo-router";
 
@@ -32,8 +32,6 @@ export default function ModalPasswordRecovery({ closeModal }) {
     setEmail(text);
     setEmailValid(validateEmail(text));
   }
-
-  console.log(emailValid);
 
   return (
     <View style={styles.container}>

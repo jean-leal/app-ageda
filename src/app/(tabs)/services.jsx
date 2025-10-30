@@ -117,6 +117,7 @@ export default function Services() {
           ListHeaderComponent={
             <>
               <Text style={styles.title}>Dias de atendimento</Text>
+              {/*
               <View style={{ borderWidth: 2, padding: 12, marginBottom: 12, borderRadius: 10 }}>
                 <Text>Horário de almoço.</Text>
                 <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -139,7 +140,7 @@ export default function Services() {
                     maxLength={5}
                   />
                 </View>
-              </View>
+              </View>*/}
             </>}
           renderItem={({ item }) => (
             <View style={[styles.containerItem, { backgroundColor: item.ativo ? colors.primary : colors.gray }]}>

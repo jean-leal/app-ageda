@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from 'expo-router';
@@ -36,7 +36,6 @@ export default function AgendaSelected({ day }) {
 
             Alert.alert("Sucesso", "Agendamento excluído com sucesso!");
             fetchAgenda();
-            closeModal();
           },
         },
       ]
@@ -58,54 +57,60 @@ export default function AgendaSelected({ day }) {
 
   }
 
-  async function SearchDayAgenda() {
-    // chama a função que busca os dias da semana ativos para atualizar o estado working
-    const daysServices = await DaysWeek()
+async function SearchDayAgenda() {
+  try {
+    const daysServices = await DaysWeek();
+
+    if (!daysServices || !Array.isArray(daysServices)) {
+      Alert.alert("Erro", "Não foi possível carregar os dias de atendimento.");
+      return;
+    }
 
     // adiciona a hora do meio dia para evitar problemas de fuso horário
     const dayIndex = new Date(`${day}T12:00:00`).getDay();
 
     // verifica se o dia está ativo para agendamento
-    const isDayActive = daysServices[dayIndex]?.ativo
+    const isDayActive = daysServices[dayIndex]?.ativo ?? false;
 
-    // se não estiver ele retorna um alerta
     if (!isDayActive) {
-      return Alert.alert("Dia não disponível para agendamento, ative o dia na aba de atendimento.");
+      Alert.alert("Dia não disponível para agendamento", "Ative o dia na aba de atendimento.");
+      return;
     }
-    else {
-      //caso esteja ativo ele abre o modal
-      setOpenModal(true);
-    }
+
+    setOpenModal(true);
+  } catch (error) {
+    console.error("Erro em SearchDayAgenda:", error);
+    Alert.alert("Erro", "Não foi possível abrir o agendamento.");
   }
+}
+
 
   // função para buscar os dias da semana ativos
-  async function DaysWeek() {
-    try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .eq('user_id', user.id);
+ async function DaysWeek() {
+  try {
+    const { data, error } = await supabase
+      .from('services')
+      .select('days_week')
+      .eq('user_id', user.id)
+      .maybeSingle(); // <-- traz o primeiro registro
 
-      if (data.length > 0) {
-        //setWorking(data[0]?.days_week);
-        return (data[0]?.days_week);
-      }
-    } catch (error) {
-      Alert.alert("Erro ao carregar os dados");
-    }
+    if (error) throw error;
+    if (!data) return [];
+
+    return data.days_week || [];
+  } catch (error) {
+    console.error("Erro em DaysWeek:", error.message);
+    return [];
   }
+}
 
-  useFocusEffect(() => {
-    if (day) {
-      fetchAgenda();
-    }
-  });
 
-  useEffect(() => {
-    if (day) {
-      fetchAgenda();
-    }
-  }, [day]);
+  useFocusEffect(
+    useCallback(() => {
+      if (day) {
+        fetchAgenda();
+      }
+    }, [day]));
 
   return (
     <View style={styles.container}>
@@ -127,7 +132,7 @@ export default function AgendaSelected({ day }) {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => {
               const isFinished = item.status === 'finished';
-              
+
               const msgWhatsApp = `Olá!
 Passando para confirmar seu horário:
 📅  *${item.date.split('-').reverse().join('/')}*

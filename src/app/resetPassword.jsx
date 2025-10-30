@@ -92,6 +92,8 @@ export default function ResetPassword() {
               placeholder="Digite o Token recebido por e-mail"
               value={token}
               onChangeText={setToken}
+              keyboardType="numeric"
+              maxLength={6}
             />
             <Button
               title="Salvar"

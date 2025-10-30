@@ -14,8 +14,13 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [isPasswordResetFlow, setIsPasswordResetFlow] = useState(false);
 
+  const trialStart = new Date();
+  const trialEnd = new Date();
+  trialEnd.setDate(trialStart.getDate() + 14); // 14 dias depois
+
   async function SignUp({ name, email, password, passwordConfirm }) {
     setLoading(true);
+    
     // validando de todos os campos estão preenchidos
     if (!name.trim() || !email.trim() || !password.trim() || !passwordConfirm.trim()) {
       Alert.alert('Atenção', 'Preencha todos os campos');
@@ -30,12 +35,12 @@ export function AuthProvider({ children }) {
     }
 
     // efetuando o cadastro no banco, com email e senha, o campo options é para adicionar dados a uma tabela separada chamada users
-    const { data, error } = await supabase.auth.signUp({
+    const { data: signupData, error } = await supabase.auth.signUp({
       email: email,
       password: password,
       options: {
         data: {
-          name: name
+          name: name,
         }
       }
     }).catch(error => {
@@ -161,7 +166,7 @@ export function AuthProvider({ children }) {
       user,
       setAuth,
       UpdateUser,
-      uploadImg, 
+      uploadImg,
       isPasswordResetFlow,
       setIsPasswordResetFlow
     }}>

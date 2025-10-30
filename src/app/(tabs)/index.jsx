@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useFocusEffect } from 'expo-router';
+import React, { useState, useCallback, use } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import Header from '../../components/headerProfile/header.jsx';
@@ -11,6 +11,7 @@ import CardHome from '../../components/cardHome/cardHome.jsx';
 export default function Home() {
   const { user } = useAuth();
   const [events, setEvents] = useState([]);
+  const router = useRouter();
 
   const date = new Date().toLocaleDateString('pt-BR').split('/').reverse().join('-');
 
@@ -24,17 +25,18 @@ export default function Home() {
     }
   }
 
-  useFocusEffect(() => {
-    if (user?.id) {
-      fetchAgenda();
-    }
-  });
-
-  useEffect(() => {
-    if (user?.id) {
-      fetchAgenda();
-    }
-  }, [user?.id]);
+  useFocusEffect(
+    useCallback(() => {
+        //verificando se o tempo gratis expirou
+        const isTrialExpired = new Date() > new Date(user?.trial_end);
+        if (isTrialExpired && !user?.is_premium) {
+          router.replace('/upgrade');
+          return;
+        }
+        if (user?.id) {
+          fetchAgenda();
+        }
+      }, [user?.id]));
 
   return (
     <View style={styles.container}>

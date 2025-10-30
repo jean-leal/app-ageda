@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
 import Header from '../../components/headerProfile/header.jsx';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ItemCustomer from '../../components/itemCustomer/itemCustomer.jsx';
+import { useFocusEffect } from 'expo-router';
 
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -32,10 +33,13 @@ export default function Customers() {
       Alert.alert("Erro ao carregar os dados");
     }
   }
-  //chamando a função de fetch quando o componente é montado
-  useEffect(() => {
-    FetchCustomers();
-  }, [])
+  
+  //chamando a função de fetch quando o componente é focado
+    useFocusEffect(
+      useCallback(() => {
+        FetchCustomers();
+      }, [customers])
+    );
 
   return (
     <View style={styles.container}>
